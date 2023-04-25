@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+hr {
+  margin: 3rem 0;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -41,25 +45,8 @@
   color: #888;
 }
 
-.red {
-  background-color: red;
-  color: blue;
-  padding: .7rem 2rem;
-  margin-left: 1rem;
-}
-
-.blue {
-  background-color: blue;
-  color: red;
-  padding: .7rem 2rem;
-  margin-left: 1rem;
-}
-
-ul {
-  margin-top: 2rem;
-}
-
-li {
-  list-style: none;
-  margin-top: 1rem;
+.danger {
+  font-size: 2rem;
+  color: crimson;
+  padding: .5rem 2rem;
 }
