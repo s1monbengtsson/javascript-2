@@ -2,13 +2,6 @@
     text-align: center;
 }
 
-.todos {
-    width: 500px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-}
-
 .todo-item {
     list-style: none;
     display: flex;
@@ -28,6 +21,7 @@
 .todo-button {
     border: none;
     background: none;
+    cursor: pointer;
 }
 
 form {
@@ -37,7 +31,8 @@ form {
 
 .completed {
     text-decoration: line-through;
-    color: rgba(2, 95, 2, 0.922);
+    font-style: italic;
+    color: rgba(99, 103, 99, 0.922);
 
 }
 

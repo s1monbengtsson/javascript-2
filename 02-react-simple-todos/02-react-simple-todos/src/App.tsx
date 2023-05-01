@@ -116,14 +116,9 @@ function App() {
       </main>
       )}
 
-      
-
       {todos.length === 0 && (
         <p className="list-empty">You currently have zero todos</p>
       )}
-      
-
-      
 
       <form onSubmit={handleFormSubmit}>
         <div className="input-container">
@@ -140,121 +135,7 @@ function App() {
         </div>
       </form>
 
-
       <p className="completed-todos">{completedTodos.length}/{todos.length} Todos Completed</p>
-
-
-      {/* <ul>
-        <h2>Completed Todos</h2>
-        {completedTodos.map((todo, index) => (
-          <li
-            key={index}
-            className="todo-item"
-          >
-            <p
-              className="completed">
-              {todo.id}: {todo.title}
-            </p>
-
-            <div className="button-wrapper">
-              <button 
-                className="todo-button" 
-                onClick={() => handleToggleTodo(todo)}>✅
-              </button>
-              <button 
-                className="todo-button" 
-                onClick={() => handleRemoveTodo(todo)}>🗑
-              </button>
-            </div>
-          </li>
-        ))}
-        <p className="hint">Click the todo to uncomplete it</p>
-      </ul> */}
-
-      {/* <ul>
-        <h2>Uncompleted Todos</h2>
-        {uncompletedTodos.map((todo, index) => (
-          <li
-            key={index}
-            className="todo-item"
-          >
-
-            <p>{todo.id}: {todo.title}</p>
-
-            <div className="button-wrapper">
-              <button 
-                className="todo-button" 
-                onClick={() => handleToggleTodo(todo)}>✅
-              </button>
-              <button 
-                className="todo-button" 
-                onClick={() => handleRemoveTodo(todo)}>🗑
-              </button>
-            </div>
-          </li>
-        ))}
-        <p className="hint">Click the todo to complete it</p>
-      </ul> */}
-
-      
-      {/* <ul className="todos-secondary">
-        <h2 className="todos-heading">Completed Todos</h2>
-        {completedTodos.map((todo, index) => (
-          <li 
-          key={index}
-          className="todo-item" 
-        >
-
-          <p
-            className={todo.completed ? 'completed' : ""}>
-            {index+1}: {todo.title}
-          </p>
-
-          <div className="button-wrapper">
-            <button 
-              className="todo-button" 
-              onClick={() => handleToggleTodo(todo)}>✅
-            </button>
-            <button 
-              className="todo-button" 
-              onClick={() => handleRemoveTodo(todo)}>🗑
-            </button>
-          </div>
-          
-        </li>
-        ))}
-      </ul>
-      
-
-      
-      <ul className="todos-secondary">
-        <h2 className="todos-heading">Uncompleted Todos</h2>
-        {uncompletedTodos.map((todo, index) => (
-          <li 
-          key={index}
-          className="todo-item" 
-        >
-
-          <p
-            className={todo.completed ? 'completed' : ""}>
-            {index+1}: {todo.title}
-          </p>
-
-          <div className="button-wrapper">
-            <button 
-              className="todo-button" 
-              onClick={() => handleToggleTodo(todo)}>✅
-            </button>
-            <button 
-              className="todo-button" 
-              onClick={() => handleRemoveTodo(todo)}>🗑
-            </button>
-          </div>
-          
-        </li>
-        ))}
-      </ul> */}
-      
     </div>
     
   )
