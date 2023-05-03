@@ -54,7 +54,7 @@ function App() {
 					className="todo-item"
 					>
 
-						<p>{todo.id}: {todo.title}</p>
+						<span>{todo.id}: {todo.title}</span>
 
 						<div className="button-wrapper">
 							<button 
@@ -80,10 +80,10 @@ function App() {
 					key={index}
 					className="todo-item"
 					>
-						<p
+						<span
 							className="completed">
 							{todo.id}: {todo.title}
-						</p>
+						</span>
 
 						<div className="button-wrapper">
 							<button 
