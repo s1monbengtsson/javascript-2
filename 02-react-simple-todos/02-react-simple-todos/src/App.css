@@ -2,6 +2,17 @@
     text-align: center;
 }
 
+li {
+    list-style: none;
+    margin: .5rem 0;
+}
+
+main {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+}
+
 .todo-item {
     list-style: none;
     display: flex;
@@ -36,7 +47,7 @@ form {
 
 }
 
-.completed-todos {
+.status {
     text-align: center;
 }
 
@@ -74,12 +85,6 @@ form {
     text-align: center;
 }
 
-main { 
-    width: 70%;
-    margin: 0 auto;
-    display: flex;
-
-}
 
 .todo-list {
     width: 100%;
@@ -89,6 +94,15 @@ main {
 }
 
 .todo-heading {
+    text-align: center;
+}
+
+.todo-toggle {
+    margin: 0 .5rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
     text-align: center;
 }
 
