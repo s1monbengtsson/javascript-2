@@ -20,7 +20,7 @@ main {
     margin-top: .5rem;
     padding: 1rem;
     background-color: #393939b5;
-    border: 1px solid grey;
+    border: 1px solid #a209096d;
     border-radius: 4px;
 }
 
@@ -44,6 +44,7 @@ form {
     text-decoration: line-through;
     font-style: italic;
     color: rgba(99, 103, 99, 0.922);
+    border: 1px solid #0acf1430;
 
 }
 
@@ -53,7 +54,7 @@ form {
 
 .hint {
     text-align: center;
-    font-size: .8rem;
+    font-size: .7rem;
     font-style: italic;
 }
 
@@ -65,13 +66,13 @@ form {
 
 .input-field {
     padding: .5rem;
-    border: 1px solid grey;
+    border: 1px solid #0950a26d;
     border-radius: 4px;
 }
 
 .form-button {
     border: none;
-    background-color: rgb(9, 81, 162);
+    background-color: #0951a2;
     padding: 0 1rem;
     border-radius: 4px;
     font-weight: bold;
