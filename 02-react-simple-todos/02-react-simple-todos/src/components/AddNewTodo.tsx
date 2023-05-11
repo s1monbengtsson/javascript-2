@@ -41,7 +41,7 @@ const AddNewTodo: React.FC<IProps> = ({ onAddTodo }) => {
             
 						<button disabled={newTodoTitle.length < 3} type="submit" className="form-button">Create New Todo</button>
 					</div>
-          {newTodoTitle.length < 3 && (
+          {newTodoTitle.trim().length < 3 && (
             <p className="hint">Todo has to be at least 3 characters long</p>
           )}
 				</form>
