@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Todo, TodoList } from './types'
 import TodoListItem from './components/TodoListItem'
+import TodoCounter from './components/TodoCounter'
+import AddNewTodo from './components/AddNewTodo'
 import './App.css'
 
 function App() {
@@ -10,22 +12,11 @@ function App() {
 		{ title: "Drink MOAR coffee", completed: false },
 		{ title: "Become React Master", completed: false },
 	])
-	const [newTodoTitle, setNewTodoTitle] = useState("")
 
-	const handleSubmit = (e: React.FormEvent) => {
-		// stop form from submitting
-		e.preventDefault()
-
-		// create a new todo and set a new todos state
-		const newTodo: Todo = {
-			title: newTodoTitle,
-			completed: false,
-		}
-		setTodos([...todos, newTodo])
-
-		// clear newTodoTitle state
-		setNewTodoTitle("")
+	const addTodo = (todo: Todo) => {
+		setTodos([...todos, todo])
 	}
+	
 
 	const deleteTodo = (todoToDelete: Todo) => {
 		// set a new list of todos where the clicked todo is excluded
@@ -89,29 +80,16 @@ function App() {
 				</main>
 			)}
 
-				<form onSubmit={handleSubmit}>
-					<div className="input-container">
-						<input 
-							className="input-field"
-							type="text"
-							placeholder="New Todo"
-							required
-							minLength={3}
-							onChange={e => setNewTodoTitle(e.target.value)}
-							value={newTodoTitle}
-						/>
-						<button type="submit" className="form-button">Create New Todo</button>
-					</div>
-				</form>
+				<AddNewTodo 
+					onAddTodo={addTodo}
+				/>
 
-				<p className="status">
-					{finishedTodos.length} of {todos.length} todos completed
-				</p>
+				<TodoCounter 
+					todos={todos.length}
+					finishedTodos={finishedTodos.length}
+				/>
 
-			{todos.length === 0 && (
-				<p className='list-empty'>Yayyy, you have 0 todos to do</p>
-			)}
-
+				
 		</div>
 	)
 }
