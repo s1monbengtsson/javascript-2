@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Todo, TodoList } from './types'
+import { Todo, Todos } from './types'
 import TodoListItem from './components/TodoListItem'
+import TodoList from './components/TodoList'
 import TodoCounter from './components/TodoCounter'
 import AddNewTodo from './components/AddNewTodo'
 import './App.css'
 
 function App() {
-	const [todos, setTodos] = useState<TodoList>([
+	const [todos, setTodos] = useState<Todos>([
 		{ title: "Drink coffee", completed: true },
 		{ title: "Learn React", completed: true },
 		{ title: "Drink MOAR coffee", completed: false },
@@ -52,31 +53,20 @@ function App() {
 
 			{todos.length > 0 && (
 				<main>
-					<ul className="todo-list">
-						<span className="section-title">Uncompleted Todos</span>
-						{unfinishedTodos.map((todo, index) => (
-							
-							<TodoListItem 
-								onToggle={toggleTodo}
-								onDelete={deleteTodo}
-								todo={todo} 
-								key={index} 
-							/>
-						) )}
-					</ul>
 
-					<ul className="todo-list">
-						<span className="section-title">Completed Todos</span>
-						{finishedTodos.map((todo, index) => (
-							<TodoListItem
-								onToggle={toggleTodo}
-								onDelete={deleteTodo}
-								todo={todo}
-								key={index}
-								
-							/>
-						) )}
-					</ul>
+					<TodoList
+						onToggle={toggleTodo}
+						onDelete={deleteTodo}
+						todos={unfinishedTodos}
+						value="Uncompleted Todos"
+					/>
+
+					<TodoList 
+						onToggle={toggleTodo}
+						onDelete={deleteTodo}
+						todos={finishedTodos}
+						value="Completed Todos"
+					/>
 				</main>
 			)}
 
