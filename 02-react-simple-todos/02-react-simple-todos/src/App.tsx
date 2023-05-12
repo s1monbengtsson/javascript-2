@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Todo, Todos } from './types'
-import TodoListItem from './components/TodoListItem'
 import TodoList from './components/TodoList'
 import TodoCounter from './components/TodoCounter'
 import AddNewTodo from './components/AddNewTodo'
