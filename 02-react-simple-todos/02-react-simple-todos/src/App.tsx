@@ -3,30 +3,54 @@ import { Todo, Todos } from './types'
 import TodoList from './components/TodoList'
 import TodoCounter from './components/TodoCounter'
 import AddNewTodo from './components/AddNewTodo'
+import * as TodosAPI from './services/TodosAPI'
 import './App.css'
 
 function App() {
-	const [todos, setTodos] = useState<Todos>([
-		{ title: "Drink coffee", completed: true },
-		{ title: "Learn React", completed: true },
-		{ title: "Drink MOAR coffee", completed: false },
-		{ title: "Become React Master", completed: false },
-	])
+	const [todos, setTodos] = useState<Todos>([])
+
+	const getTodos = async () => {
+		try {
+			const data = await TodosAPI.getTodos()
+			setTodos(data)
+		} catch (err) {
+			throw new Error("Could not get todos")
+		}
+	}
 
 	const addTodo = (todo: Todo) => {
+		console.log("added todo:", todo)
 		setTodos([...todos, todo])
 	}
 	
-
-	const deleteTodo = (todoToDelete: Todo) => {
-		// set a new list of todos where the clicked todo is excluded
-		setTodos(todos.filter(todo => todo !== todoToDelete))
+	const deleteTodo = async (todoToDelete: Todo) => {
+		try {
+			await TodosAPI.deleteTodo(todoToDelete.id!)
+			// set a new list of todos where the clicked todo is excluded
+			setTodos(todos.filter(todo => todo !== todoToDelete))
+			getTodos()
+		} catch (err) {
+			throw new Error("Could not delete todo")
+		}
 	}
 
-	const toggleTodo = (todo: Todo) => {
-		todo.completed = !todo.completed
-		setTodos([...todos])
+	const toggleTodo = async (todo: Todo) => {
+		try {
+			console.log("clicked todo with id:", todo.id)
+			await TodosAPI.updateTodo(todo.id!, {
+				completed: !todo.completed
+			})
+			setTodos([...todos])
+			getTodos()
+		} catch (err) {
+			throw new Error("Could not toggle todo")
+		}
 	}
+
+	// fetch todos when app is being mounted
+	useEffect(() => {
+		getTodos()
+	}, [])
 
 	const unfinishedTodos = todos.filter(todo => !todo.completed)
 	const finishedTodos = todos.filter(todo => todo.completed)

@@ -1,6 +1,17 @@
 export type Todo = {
-    title: string
-    completed: boolean
+  id?: number
+  title: string
+  completed: boolean
   }
+
+export type CreateTodoData = {
+  title: string
+  completed: boolean
+}
+
+export type UpdateTodoData = {
+  title?: string
+  completed?: boolean
+}
 
   export type Todos = Todo[]
