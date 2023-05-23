@@ -15,27 +15,10 @@ const BASE_URL = "https://api.openweathermap.org/data/2.5"
 export const getCurrentWeather = async (query: string) => {
 	const response = await axios.get<ICurrentWeather>(`${BASE_URL}/weather?q=${query}&units=metric&appid=${API_KEY}`)
 
-	await new Promise(r => setTimeout(r, 1500))
+	await new Promise(r => setTimeout(r, 1000))
+
+	console.log("res:", response.data)
 
 	return response.data
 }
 
-
-/**
- * Get current weather for a city.
- *
- * @param {string} query City to get current weather for
- */
-const getCurrentWeatherFetch = async (query: string) => {
-	// get weather for query from OpenWeatherMap API
-	const response = await fetch(`${BASE_URL}/weather?q=${query}&units=metric&appid=${API_KEY}`)
-
-	// convert response from JSON
-	const data = await response.json()
-
-	// fake slow api
-	// await new Promise(r => setTimeout(r, 1500))
-
-	// return current weather
-	return data
-}
