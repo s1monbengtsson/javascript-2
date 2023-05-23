@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Todo} from '../types/index'
 
 interface IProps {
@@ -9,6 +9,7 @@ interface IProps {
 
 const AddNewTodo: React.FC<IProps> = ({ onAddTodo }) => {
   const [newTodoTitle, setNewTodoTitle] = useState("")
+	const newTodoTitleRef = useRef<HTMLInputElement>(null)
 
 	const handleSubmit = (e: React.FormEvent) => {
 		// stop form from submitting
@@ -27,11 +28,17 @@ const AddNewTodo: React.FC<IProps> = ({ onAddTodo }) => {
 		// clear newTodoTitle state
 		setNewTodoTitle("")
 	}
+
+	// on component mount, focus on input field
+	useEffect(() => {
+		newTodoTitleRef.current?.focus()
+	}, [])
   return (
     <>
       <form onSubmit={handleSubmit}>
 					<div className="input-container">
 						<input 
+							ref={newTodoTitleRef}
 							className="input-field"
 							type="text"
 							placeholder="New Todo"
