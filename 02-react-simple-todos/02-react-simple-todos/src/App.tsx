@@ -18,16 +18,24 @@ function App() {
 		}
 	}
 
-	const addTodo = (todo: Todo) => {
-		console.log("added todo:", todo)
-		setTodos([...todos, todo])
+	const createTodo = async (todo: Todo) => {
+		try {
+			await TodosAPI.createTodo(todo)
+			getTodos()
+		} catch (err) {
+			throw new Error("Could not create todo")
+		}
 	}
 	
 	const deleteTodo = async (todoToDelete: Todo) => {
+
+		if (!todoToDelete.id || typeof todoToDelete.id === "undefined") {
+			return
+		}
+
 		try {
-			await TodosAPI.deleteTodo(todoToDelete.id!)
+			await TodosAPI.deleteTodo(todoToDelete.id)
 			// set a new list of todos where the clicked todo is excluded
-			setTodos(todos.filter(todo => todo !== todoToDelete))
 			getTodos()
 		} catch (err) {
 			throw new Error("Could not delete todo")
@@ -35,12 +43,16 @@ function App() {
 	}
 
 	const toggleTodo = async (todo: Todo) => {
+
+		if (!todo.id || typeof todo.id === "undefined") {
+			return
+		}
+
 		try {
 			console.log("clicked todo with id:", todo.id)
 			await TodosAPI.updateTodo(todo.id!, {
 				completed: !todo.completed
 			})
-			setTodos([...todos])
 			getTodos()
 		} catch (err) {
 			throw new Error("Could not toggle todo")
@@ -55,16 +67,10 @@ function App() {
 	const unfinishedTodos = todos.filter(todo => !todo.completed)
 	const finishedTodos = todos.filter(todo => todo.completed)
 
-	// This will only be executed when the component is mounted,
-	// and only AFTER the component has been rendered
-	useEffect(() => {
-		console.log("Look mom, I'm a newly mounted component 👶🏻")
-	}, [])
 
 	// This will only be executed if `finishedTodos.length` or `todos.length`
 	// have changed since last render, and only AFTER the component has been rendered
 	useEffect( () => {
-		console.log("Updating page title using an effect")
 		document.title = `${finishedTodos.length} of ${todos.length} completed`
 	}, [finishedTodos.length, todos.length] )
 
@@ -94,15 +100,13 @@ function App() {
 			)}
 
 				<AddNewTodo 
-					onAddTodo={addTodo}
+					onAddTodo={createTodo}
 				/>
 
 				<TodoCounter 
 					todos={todos.length}
 					finishedTodos={finishedTodos.length}
 				/>
-
-				
 		</div>
 	)
 }

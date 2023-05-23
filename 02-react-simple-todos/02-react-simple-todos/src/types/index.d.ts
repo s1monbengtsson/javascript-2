@@ -4,14 +4,6 @@ export type Todo = {
   completed: boolean
   }
 
-export type CreateTodoData = {
-  title: string
-  completed: boolean
-}
+export type UpdateTodoData = Partial<Todo>
 
-export type UpdateTodoData = {
-  title?: string
-  completed?: boolean
-}
-
-  export type Todos = Todo[]
+export type Todos = Todo[]

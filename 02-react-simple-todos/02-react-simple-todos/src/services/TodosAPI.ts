@@ -3,10 +3,19 @@
  */
 
 import axios from 'axios'
-import { Todos, Todo, CreateTodoData, UpdateTodoData } from '../types'
+import { Todo, UpdateTodoData } from '../types'
 
 
 const BASE_URL = 'http://localhost:3000'
+
+/**
+ * Create a new todo
+ */
+
+export const createTodo = async (todo: Todo) => {
+	const res = await axios.post<Todo>(`${BASE_URL}/todos`, todo)
+	return res.data
+}
 
 /**
  * Get all todos
@@ -27,15 +36,6 @@ export const getTodo = async (id: number) => {
 }
 
 /**
- * Create a new todo
- */
-
-export const createTodo = async (todo: CreateTodoData) => {
-	const res = await axios.post<Todo>(`${BASE_URL}/todos`, todo)
-	return res.data
-}
-
-/**
  * Update a todo
  */
 
@@ -48,8 +48,7 @@ export const updateTodo = async (id: number, todo: UpdateTodoData) => {
  * Delete a todo
  */
 
-export const deleteTodo = async(id: number) => {
-	const res = await axios.delete<Todo>(`${BASE_URL}/todos/${id}`)
-	return res.data
+export const deleteTodo = async (id: number) => {
+	await axios.delete<Todo>(`${BASE_URL}/todos/${id}`)
 }
 

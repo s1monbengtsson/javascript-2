@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import {CreateTodoData, Todo} from '../types/index'
-import * as TodoAPI from '../services/TodosAPI'
+import { Todo} from '../types/index'
 
 interface IProps {
   onAddTodo: (todo: Todo) => void
@@ -14,26 +13,14 @@ const AddNewTodo: React.FC<IProps> = ({ onAddTodo }) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		// stop form from submitting
 		e.preventDefault()
-
-
-		const postTodo = async (todo: Todo) => {
-			try {
-				const data = await TodoAPI.createTodo(todo)
-				console.log("new todo:", data)
-				return data
-			} catch (err) {
-				throw new Error("Could not create todo")
-			}
-		}
 		
 
 		// create a new todo and set a new todos state
-		const newTodo: CreateTodoData = {
+		const newTodo: Todo = {
 			title: newTodoTitle,
 			completed: false,
 		}
 
-		postTodo(newTodo)
 		onAddTodo(newTodo)
 		
 
