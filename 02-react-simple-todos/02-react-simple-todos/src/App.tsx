@@ -50,7 +50,7 @@ function App() {
 
 		try {
 			console.log("clicked todo with id:", todo.id)
-			await TodosAPI.updateTodo(todo.id!, {
+			await TodosAPI.updateTodo(todo.id, {
 				completed: !todo.completed
 			})
 			getTodos()
