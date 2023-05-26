@@ -9,23 +9,24 @@ import './assets/scss/App.scss'
 function App() {
 	const [currentWeather, setCurrentWeather] = useState<ICurrentWeather|null>(null)
 	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState(false)
+	const [error, setError] = useState<string|false>(false)
 
 	const handleSearch = async (location: string) => {
+		setCurrentWeather(null)
 		setIsLoading(true)
 		setError(false)
-		console.log("error:", error)
+
+
 		try {
 			const data = await getCurrentWeather(location)
 			setCurrentWeather(data)
-			setIsLoading(false)
-		} catch (err: any) {
-			console.log("error", err.message)
-			setIsLoading(false)
-			setError(true)
-		}
-	}
 
+		} catch (err: any) {
+			setError(err.message)
+		}
+
+		setIsLoading(false)
+	}
 
 	return (
 		<div id="app" className="container">
@@ -34,14 +35,14 @@ function App() {
 			/>
 
 			{isLoading && (
-				<img src={Airplane} />
+				<img src={Airplane} className="w-100 img-fluid py-5" />
 			)}
 
 			{error && (
-				<div className="alert alert-danger">Could not find city</div>
+				<div className="alert alert-danger">{error}</div>
 			)}
 
-			{currentWeather && !error && !isLoading && (
+			{currentWeather && (
 				<Forecast 
 					data={currentWeather}
 				/>

@@ -34,14 +34,14 @@ const SearchCity: React.FC<IProps> = ({ onSearch }) => {
 					/>
 
 					<button
-						disabled={city.length < 3}
+						disabled={city.trim().length < 3}
 						type="submit"
 						className="btn btn-success"
 					>🔍</button>
 				</div>
 
-				{city.length < 3 && city.length !== 0 && (
-					<p className="text-white mt-2">City must be at least 3 characters long</p>
+				{city.trim().length < 3 && city.trim().length !== 0 && (
+					<p className="mt-2 hint">City must be at least 3 characters long</p>
 				)}
 			</form>
 		</div>

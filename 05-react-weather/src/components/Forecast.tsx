@@ -1,5 +1,7 @@
 import React from 'react'
 import forecastBanner from '../assets/images/forecast-banner.png'
+import dayBanner from '../assets/images/day.svg'
+import nightBanner from '../assets/images/night.svg'
 import { ICurrentWeather } from '../types'
 
 interface IProps {
@@ -7,18 +9,18 @@ interface IProps {
 }
 
 const Forecast: React.FC<IProps> = ({ data }) => {
-
-	const condition = data.weather[0].icon
+	const now = Math.round(Date.now() / 1000)
+	const banner = now > data.sys.sunrise && now < data.sys.sunset ? dayBanner : nightBanner
+	const updatedAt = new Date(data.dt * 1000).toLocaleString()
 
 	return (
 		<div id="forecast">
 			<div className="card">
 
-				<img src={forecastBanner} className="card-img-top" alt="Daytime, nighttime, daytime, nighttime"/>
+				<img src={banner} className="card-img-top" alt="Daytime, nighttime, daytime, nighttime"/>
 
 				<div className="card-body">
 					<h5 className="card-title" id="location">
-						<img src={`https://openweathermap.org/img/wn/${condition}@2x.png`} alt="" />
 						<span id="city">{data.name}</span>
 						<span id="country">{data.sys.country}</span>
 					</h5>
@@ -32,20 +34,21 @@ const Forecast: React.FC<IProps> = ({ data }) => {
 					<p className="wind">
 						<span id="windspeed">{data.wind.speed}</span> m/s
 					</p>
-
-					{/*
 					<ul className="conditions">
-						<li><img src="" title="CONDITION_MAIN" alt="CONDITION_MAIN">CONDITION_DESCRIPTION</li>
+						{data.weather.map((obj) => (
+							<li key={obj.id}>
+								<img 
+									src={`https://openweathermap.org/img/wn/${obj.icon}@2x.png`} 
+									title={obj.main} 
+									alt="current weather icon" 
+								/>
+							</li>
+						))}
 					</ul>
-
-					<p className="text-muted small">
-						<span>
-							1970-01-01 13:37:00
-						</span>
+					<p className="updated-at"> 
+						<span>{updatedAt}</span>	
 					</p>
-					*/}
 				</div>
-
 			</div>
 		</div>
 	)
