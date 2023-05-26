@@ -1,5 +1,4 @@
 import React from 'react'
-import forecastBanner from '../assets/images/forecast-banner.png'
 import dayBanner from '../assets/images/day.svg'
 import nightBanner from '../assets/images/night.svg'
 import { ICurrentWeather } from '../types'
