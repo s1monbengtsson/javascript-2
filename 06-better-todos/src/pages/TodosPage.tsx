@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Todo, Todos } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import AddNewTodoForm from '../components/AddNewTodoForm'
 import * as TodosAPI from '../services/TodosAPI'
+import Alert from 'react-bootstrap/Alert'
 
 const TodosPage = () => {
 	const [todos, setTodos] = useState<Todos|null>(null)
+	const location = useLocation()
 
 	// Get todos from api
 	const getTodos = async () => {
@@ -32,6 +34,12 @@ const TodosPage = () => {
 
 			<AddNewTodoForm onAddTodo={addTodo} />
 
+			{location.state?.message && (
+				<Alert variant="success">
+					{location.state.message}
+				</Alert>
+			)}
+
 			{todos && todos.length > 0 && (
 				<ListGroup className="todolist">
 					{todos.map(todo => (
@@ -51,6 +59,8 @@ const TodosPage = () => {
 			{todos && todos.length === 0 && (
 				<p>Yayyy, you have 0 todos to do</p>
 			)}
+
+
 		</>
 	)
 }
