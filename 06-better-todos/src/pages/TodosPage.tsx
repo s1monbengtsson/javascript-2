@@ -20,35 +20,6 @@ const TodosPage = () => {
 		getTodos()
 	}
 
-	/*
-	// Delete a todo in the api
-	const deleteTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Delete todo from the api
-		await TodosAPI.deleteTodo(todo.id)
-
-		// Get all the todos from the api
-		getTodos()
-	}
-
-	// Toggle the completed status of a todo in the api
-	const toggleTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Update a todo in the api
-		await TodosAPI.updateTodo(todo.id, {
-			completed: !todo.completed
-		})
-
-		// Get all the todos from the api
-		getTodos()
-	}
-	*/
 
 	// fetch todos when App is being mounted
 	useEffect(() => {
