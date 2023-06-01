@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Todo, Todos } from '../types'
-import TodoCounter from '../components/TodoCounter'
-import TodoList from '../components/TodoList'
+import ListGroup from 'react-bootstrap/ListGroup'
+import { Link } from 'react-router-dom'
 import AddNewTodoForm from '../components/AddNewTodoForm'
 import * as TodosAPI from '../services/TodosAPI'
 
 const TodosPage = () => {
-    const [todos, setTodos] = useState<Todos>([])
+	const [todos, setTodos] = useState<Todos|null>(null)
 
 	// Get todos from api
 	const getTodos = async () => {
@@ -20,6 +20,7 @@ const TodosPage = () => {
 		getTodos()
 	}
 
+	/*
 	// Delete a todo in the api
 	const deleteTodo = async (todo: Todo) => {
 		if (!todo.id) {
@@ -47,45 +48,40 @@ const TodosPage = () => {
 		// Get all the todos from the api
 		getTodos()
 	}
+	*/
 
 	// fetch todos when App is being mounted
 	useEffect(() => {
 		getTodos()
 	}, [])
 
-	const unfinishedTodos = todos.filter(todo => !todo.completed)
-	const finishedTodos = todos.filter(todo => todo.completed)
+	return (
+		<>
+			<h1 className="mb-3">Todos</h1>
 
-	// console.log("App rendering...")
-  return (
-    <>
-    			<h1 className="mb-3">React Simple Todos</h1>
+			<AddNewTodoForm onAddTodo={addTodo} />
 
-<AddNewTodoForm onAddTodo={addTodo} />
+			{todos && todos.length > 0 && (
+				<ListGroup className="todolist">
+					{todos.map(todo => (
+						<ListGroup.Item
+							action
+							as={Link}
+							key={todo.id}
+							className={todo.completed ? 'done' : ''}
+							to={`/todos/${todo.id}`}
+						>
+							{todo.title}
+						</ListGroup.Item>
+					))}
+				</ListGroup>
+			)}
 
-{todos.length > 0 && (
-    <>
-        <TodoList
-            onToggle={toggleTodo}
-            onDelete={deleteTodo}
-            todos={unfinishedTodos}
-        />
-
-        <TodoList
-            onToggle={toggleTodo}
-            onDelete={deleteTodo}
-            todos={finishedTodos}
-        />
-
-        <TodoCounter finished={finishedTodos.length} total={todos.length} />
-    </>
-)}
-
-{todos.length === 0 && (
-    <p>Yayyy, you have 0 todos to do</p>
-)}
-    </>
-  )
+			{todos && todos.length === 0 && (
+				<p>Yayyy, you have 0 todos to do</p>
+			)}
+		</>
+	)
 }
 
 export default TodosPage
