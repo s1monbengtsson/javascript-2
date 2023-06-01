@@ -10,6 +10,7 @@ const TodoPage = () => {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string|null>(null)
     const [todo, setTodo] = useState<Todo|null>(null)
+	const [warning, setWarning] = useState<boolean|null>(null)
     const { id } = useParams()
     const todoId = Number(id)
 	const navigate = useNavigate()
@@ -46,6 +47,23 @@ const TodoPage = () => {
 		})
 
 		setTodo(updatedTodo)
+	}
+
+	const editTodo = async (todo: Todo) => {
+
+		if (!todo.id) {
+			return
+		}
+
+		navigate(`/todos/${todo.id}/edit`, {
+			replace: true,
+			state: {
+				id: todo.id,
+				title: todo.title
+			}
+		})
+
+	
 	}
 
 
@@ -97,9 +115,16 @@ const TodoPage = () => {
 
         <div className="buttons mb-3">
 			<Button variant="success" onClick={() => toggleTodo(todo)}>Toggle</Button>
-			<Button variant="warning">Edit</Button>
-			<Button variant="danger" onClick={() => deleteTodo(todo)}>Delete</Button>
+			<Button variant="warning" onClick={() => editTodo(todo)}>Edit</Button>
+			<Button variant="danger" onClick={() => setWarning(true)}>Delete</Button>
         </div>
+
+		{warning && (
+			<Alert variant='danger'>
+				<p>Do you really want to delete todo: {todo.title}</p>
+				<Button variant="danger" onClick={() => deleteTodo(todo)}>Delete {todo.title}</Button>
+			</Alert>
+		)}
 
         <Link to="/todos">
 				<Button variant='secondary'>&laquo; All todos</Button>

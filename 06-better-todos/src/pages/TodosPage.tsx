@@ -32,10 +32,8 @@ const TodosPage = () => {
 		<>
 			<h1 className="mb-3">Todos</h1>
 
-			<AddNewTodoForm onAddTodo={addTodo} />
-
 			{location.state?.message && (
-				<Alert variant="success">
+				<Alert variant="success" dismissible>
 					{location.state.message}
 				</Alert>
 			)}
