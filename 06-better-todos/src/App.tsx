@@ -1,95 +1,30 @@
-import { useEffect, useState } from 'react'
-import { Todo, Todos } from './types'
+
 import Container from 'react-bootstrap/Container'
+import { Route, Routes } from 'react-router-dom'
+import TodosPage from './pages/TodosPage'
+import HomePage from './pages/HomePage'
 import './assets/scss/App.scss'
-import TodoCounter from './components/TodoCounter'
-import TodoList from './components/TodoList'
-import AddNewTodoForm from './components/AddNewTodoForm'
-import * as TodosAPI from './services/TodosAPI'
+import Navigation from './components/Navigation'
+import TodoPage from './pages/TodoPage'
+import NotFound from './pages/NotFound'
+import CreateTodo from './pages/CreateTodoPage'
 
-function App() {
-	const [todos, setTodos] = useState<Todos>([])
 
-	// Get todos from api
-	const getTodos = async () => {
-		const data = await TodosAPI.getTodos()
-		setTodos(data)
-	}
-
-	// Create a new todo in the API
-	const addTodo = async (todo: Todo) => {
-		await TodosAPI.createTodo(todo)
-		getTodos()
-	}
-
-	// Delete a todo in the api
-	const deleteTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Delete todo from the api
-		await TodosAPI.deleteTodo(todo.id)
-
-		// Get all the todos from the api
-		getTodos()
-	}
-
-	// Toggle the completed status of a todo in the api
-	const toggleTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Update a todo in the api
-		await TodosAPI.updateTodo(todo.id, {
-			completed: !todo.completed
-		})
-
-		// Get all the todos from the api
-		getTodos()
-	}
-
-	// fetch todos when App is being mounted
-	useEffect(() => {
-		getTodos()
-	}, [])
-
-	const unfinishedTodos = todos.filter(todo => !todo.completed)
-	const finishedTodos = todos.filter(todo => todo.completed)
-
-	// console.log("App rendering...")
-
+const App = () => {
 	return (
-		<Container>
-			<h1 className="mb-3">React Simple Todos</h1>
-
-			<AddNewTodoForm onAddTodo={addTodo} />
-
-			{todos.length > 0 && (
-				<>
-					<TodoList
-						onToggle={toggleTodo}
-						onDelete={deleteTodo}
-						todos={unfinishedTodos}
-					/>
-
-					<TodoList
-						onToggle={toggleTodo}
-						onDelete={deleteTodo}
-						todos={finishedTodos}
-					/>
-
-					<TodoCounter finished={finishedTodos.length} total={todos.length} />
-				</>
-			)}
-
-			{todos.length === 0 && (
-				<p>Yayyy, you have 0 todos to do</p>
-			)}
-
-		</Container>
+		<div id="App">
+			<Navigation/>
+			<Container className="py-3">
+				<Routes>
+					<Route path="/" element={<HomePage />} />
+					<Route path="/todos" element={<TodosPage />} />
+					<Route path="/todos/:id" element={<TodoPage />} />
+					<Route path="*" element={<NotFound />} />
+					<Route path="/todos/create" element={<CreateTodo />} />
+				</Routes>
+			</Container>
+		</div>
 	)
-}
+} 
 
 export default App

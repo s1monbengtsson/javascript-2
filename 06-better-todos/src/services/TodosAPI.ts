@@ -8,10 +8,19 @@ const BASE_URL = 'http://localhost:3000'
 
 /**
  * Get all todos
+ * @param todo_id Todo ID to get
  */
 export const getTodos = async () => {
 	const res = await axios.get(`${BASE_URL}/todos`)
 	return res.data as Todos
+}
+
+/**
+ * Get a single todos
+ */
+export const getTodo = async (todo_id: number) => {
+	const res = await axios.get(`${BASE_URL}/todos/${todo_id}`)
+	return res.data as Todo
 }
 
 /**
