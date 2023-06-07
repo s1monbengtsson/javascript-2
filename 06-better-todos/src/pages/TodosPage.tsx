@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Todo, Todos } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup'
 import { Link, useLocation } from 'react-router-dom'
-import AddNewTodoForm from '../components/AddNewTodoForm'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
 
@@ -13,15 +12,13 @@ const TodosPage = () => {
 	// Get todos from api
 	const getTodos = async () => {
 		const data = await TodosAPI.getTodos()
+
+		// sort alphabetically by title
+		data.sort((a,b ) => a.title.localeCompare(b.title))
+		// sort by completed status
+		data.sort((a,b) => Number(a.completed) - Number(b.completed))
 		setTodos(data)
 	}
-
-	// Create a new todo in the API
-	const addTodo = async (todo: Todo) => {
-		await TodosAPI.createTodo(todo)
-		getTodos()
-	}
-
 
 	// fetch todos when App is being mounted
 	useEffect(() => {
