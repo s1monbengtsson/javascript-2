@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import Container from 'react-bootstrap/Container'
 import { Routes, Route } from 'react-router-dom'
 import Navigation from './components/Navigation'
@@ -5,10 +6,13 @@ import HomePage from './pages/HomePage'
 import NotFound from './pages/NotFound'
 import SearchPage from './pages/SearchPage'
 import './assets/scss/App.scss'
+import { ThemeContext } from './contexts/ThemeProvider'
 
 const App = () => {
+	const { isDarkMode } = useContext(ThemeContext)
+
 	return (
-		<div id="App">
+		<div id="App" className={isDarkMode ? 'bg-dark text-white' : ''}>
 			<Navigation />
 
 			<Container className="py-3">
