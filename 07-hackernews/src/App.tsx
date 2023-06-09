@@ -2,19 +2,19 @@ import classNames from 'classnames'
 import Container from 'react-bootstrap/Container'
 import { Routes, Route } from 'react-router-dom'
 import Navigation from './components/Navigation'
+import useThemeContext from './hooks/useThemeContext'
+import ChuckNorrisPage from './pages/ChuckNorrisPage'
 import HomePage from './pages/HomePage'
 import NotFound from './pages/NotFound'
-import SearchPage from './pages/SearchPage'
-import useThemeContext from './hooks/useThemeContext'
-import './assets/scss/App.scss'
 import RandomDogPage from './pages/RandomDogPage'
+import SearchPage from './pages/SearchPage'
+import './assets/scss/App.scss'
 
 const App = () => {
 	const { isDarkMode } = useThemeContext()
 
 	const cssClasses = classNames({
-		'bg-dark text-white' : isDarkMode,
-		'not-dark-mode' : !isDarkMode
+		'bg-dark text-white': isDarkMode,
 	})
 
 	return (
@@ -24,6 +24,7 @@ const App = () => {
 			<Container className="py-3">
 				<Routes>
 					<Route path="/" element={<HomePage />} />
+					<Route path="/chuck-norris" element={<ChuckNorrisPage />} />
 					<Route path="/random-dog" element={<RandomDogPage />} />
 					<Route path="/search" element={<SearchPage />} />
 

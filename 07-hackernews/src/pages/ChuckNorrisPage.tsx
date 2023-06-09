@@ -1,16 +1,15 @@
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
-import Image from 'react-bootstrap/Image'
 import Spinner from 'react-bootstrap/Spinner'
-import useGetRandomDogImage from '../hooks/useGetRandomDogImage'
+import useChuckNorrisJoke from '../hooks/useChuckNorrisJoke'
 
-const RandomDogPage = () => {
+const ChuckNorrisPage = () => {
 	const { data, error, execute, isError, isLoading } =
-		useGetRandomDogImage()
+		useChuckNorrisJoke()
 
 	return (
 		<>
-			<h1>A random doggo 🐶</h1>
+			<h1>A Chuck Norris fact</h1>
 
 			<div className="mb-3">
 				<Button
@@ -24,10 +23,14 @@ const RandomDogPage = () => {
 			{isError === true && <Alert variant="warning">{error}</Alert>}
 
 			<div>
-				{data && data.status === "success" && <Image src={data.message} fluid />}
+				{data && (
+					<>
+						<p className="display-1 text-center">{data.value}</p>
+					</>
+				)}
 			</div>
 		</>
 	)
 }
 
-export default RandomDogPage
+export default ChuckNorrisPage

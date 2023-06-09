@@ -6,9 +6,7 @@ const HomePage = () => {
 	const { isDarkMode, toggleTheme } = useThemeContext()
 
 	const handleToggleTheme = () => {
-		if (toggleTheme) {
-			toggleTheme()
-		}
+		toggleTheme()
 	}
 
 	return (
@@ -17,7 +15,7 @@ const HomePage = () => {
 
 			<p>Your theme is: {isDarkMode ? 'dark 🌙' : 'light ☀️'}</p>
 
-			<Button variant='warning' onClick={handleToggleTheme}>Switch theme</Button>
+			<Button variant="warning" onClick={handleToggleTheme}>Switch theme</Button>
 
 			<Link to="/search">
 				<Button variant="primary">Use the Search, you must!</Button>
