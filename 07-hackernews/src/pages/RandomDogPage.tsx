@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button'
 
 import useGetData from '../hooks/useGetData'
 import Alert from 'react-bootstrap/Alert'
+import Spinner from 'react-bootstrap/Spinner'
 
 
 const RandomDogPage = () => {
@@ -17,13 +18,13 @@ const RandomDogPage = () => {
 				<Button variant='primary' className="mx-2" onClick={() => setUrl(`https://dog.ceo/api/breed/chihuahua/images/random?key=${newKey}`)}>Random Chihuahua Doggo</Button>
 			</div>
 
-			{isLoading && <p>Loading...</p>}
+			{isLoading && <Spinner animation='border' variant='secondary' />}
 
 			{error && <Alert variant='warning'>{error}</Alert>}
 
 			{!error && (
 				<div>
-					{!isLoading && data && data.status === "success" && (
+					{ data && data.status === "success" && (
 						<Image src={data.message} className="img-fluid"></Image>
 					)}
 				</div>
