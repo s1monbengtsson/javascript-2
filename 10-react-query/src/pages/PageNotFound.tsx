@@ -1,7 +1,10 @@
 const PageNotFound = () => {
-    return (
-        <h1>Sorry, that page could not be found</h1>
-    )
+	return (
+		<>
+			<h1>Cat ate the page</h1>
+			<p>Sorry, the cat was hungry</p>
+		</>
+	)
 }
 
 export default PageNotFound
