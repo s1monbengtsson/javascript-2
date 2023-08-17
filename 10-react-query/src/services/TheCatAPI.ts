@@ -6,7 +6,7 @@
  */
 
 import axios from 'axios'
-import { ImageSearchResponse } from '../types/TheCatAPI.types'
+import { HN_SearchResponse, ImageSearchResponse } from '../types/TheCatAPI.types'
 
 const FAKE_DELAY = 1500
 
@@ -45,4 +45,8 @@ export const getRandomCatByBreed = async (breed_id = "") => {
 	const data = await get<ImageSearchResponse>("images/search?breed_ids=" + breed_id)
 
 	return data[0]
+}
+
+export const searchHackerNews = async (query: string) => {
+	return get<HN_SearchResponse>(`/search?query=${query}&tags=story`)
 }
