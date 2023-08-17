@@ -10,3 +10,8 @@ export type Cat = {
 }
 
 export type ImageSearchResponse = Cat[]
+
+export type Breed = {
+	id: string
+	name: string
+}

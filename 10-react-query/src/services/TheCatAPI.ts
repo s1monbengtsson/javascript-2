@@ -38,10 +38,11 @@ export const getRandomCatImage = async () => {
 }
 
 /**
- * Get random cat images
+ * Get random breed
+ * @param {string} breed_id The breed IF to get
  */
-export const getRandomCatImages = async (qty = 1) => {
-	const data = await get<ImageSearchResponse>("images/search?limit=" + qty)
+export const getRandomCatByBreed = async (breed_id = "") => {
+	const data = await get<ImageSearchResponse>("images/search?breed_ids=" + breed_id)
 
-	return data
+	return data[0]
 }
