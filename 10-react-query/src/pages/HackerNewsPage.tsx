@@ -6,17 +6,21 @@ import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
 import { searchByDate as HN_searchByDate } from '../services/HackerNewsAPI'
 import { useSearchParams } from 'react-router-dom'
+import Pagination from '../components/Pagination'
 
-const Hackernews = () => {
+
+const HackerNews = () => {
+	const [page, setPage] = useState(0)
     const [searchInput, setSearchInput] = useState("")
     const [searchParams, setSearchParams] = useSearchParams()
 
     const query = searchParams.get("query") ?? ""
     
     const { data, error, status } = useQuery({
-        queryKey: ['hackernews', query],
-        queryFn: () => HN_searchByDate(searchInput), 
-        enabled: !!query // "" = false  !"" === true  !!"" === false
+        queryKey: ['hackernews', {query, page}],
+        queryFn: () => HN_searchByDate(query, page), 
+        enabled: !!query, // "" = false  !"" === true  !!"" === false
+		keepPreviousData: true
     })
 
     function handleSubmit(e: React.FormEvent) {
@@ -25,8 +29,10 @@ const Hackernews = () => {
         if (!searchInput.trim().length) {
             return
         }
+
+		setPage(0)
         
-        setSearchParams({ query: searchInput })
+        setSearchParams({ query: searchInput }) // ?query=apple
     }
 
     return (
@@ -75,10 +81,19 @@ const Hackernews = () => {
 							</ListGroup.Item>
 						))}
 					</ListGroup>
+
+					<Pagination
+						page={data.page + 1}
+						totalPages={data.nbPages}
+						hasPreviousPage={page > 0}
+						hasNextPage={page + 1 < data.nbPages}
+						onPreviousPage={() => { setPage(prevValue => prevValue - 1), window.scrollTo({behavior: 'smooth', top: 0}) }}
+						onNextPage={() => { setPage(prevValue => prevValue + 1), window.scrollTo({behavior: 'smooth', top: 0}) }}
+					/>
 				</div>
 			)}
 		</>
 	)
 }
 
-export default Hackernews
+export default HackerNews

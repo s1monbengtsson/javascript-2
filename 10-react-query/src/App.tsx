@@ -5,7 +5,7 @@ import Navigation from './pages/partials/Navigation'
 import HomePage from './pages/HomePage'
 import PageNotFound from './pages/PageNotFound'
 import RandomCatPage from './pages/RandomCatPage'
-import Hackernews from './pages/Hackernews'
+import HackerNewsPage from './pages/HackerNewsPage'
 
 import './assets/scss/App.scss'
 import GlobalFetchingSpinner from './components/GlobalFetchingSpinner'
@@ -20,7 +20,7 @@ const App = () => {
 				<Routes>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/random-cat" element={<RandomCatPage />} />
-					<Route path="/hackernews" element={<Hackernews />} />
+					<Route path="/hackernews" element={<HackerNewsPage />} />
 
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>

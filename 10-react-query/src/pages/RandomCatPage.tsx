@@ -14,7 +14,6 @@ const breeds: Breed[] = [
 ]
 
 
-
 const RandomCatPage = () => {
 	const [selectedBreed, setSelectedBreed] = useState("")
 
