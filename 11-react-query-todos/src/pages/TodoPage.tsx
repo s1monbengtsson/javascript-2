@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import { Link, useParams } from 'react-router-dom'
-import { Todo } from '../types'
+import { Todo } from '../types/Todo.types'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
 import ConfirmationModal from '../components/ConfirmationModal'
@@ -88,34 +88,34 @@ const TodoPage = () => {
 		return
 	}
 
-  return (
-    <>
-        <h1>{data.title}</h1>
+  	return (
+		<>
+			<h1>{data.title}</h1>
 
-        <p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
+			<p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
 
-        <div className="buttons mb-3">
-			<Button variant="success" onClick={() => toggleTodo(data)}>Toggle</Button>
-			<Link to={`/todos/${data.id}/edit`}>
-				<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>
+			<div className="buttons mb-3">
+				<Button variant="success" onClick={() => toggleTodo(data)}>Toggle</Button>
+				<Link to={`/todos/${data.id}/edit`}>
+					<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>
+				</Link>
+				<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>Delete</Button>
+			</div>
+
+			<ConfirmationModal
+				show={showConfirmDelete}
+				onCancel={() => setShowConfirmDelete(false)}
+				onConfirm={() => deleteTodo(data)}
+			>
+				Are you sure you want to delete this todo?
+			</ConfirmationModal>
+			
+
+			<Link to="/todos">
+					<Button variant='secondary'>&laquo; All todos</Button>
 			</Link>
-			<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>Delete</Button>
-        </div>
-
-		<ConfirmationModal
-			show={showConfirmDelete}
-			onCancel={() => setShowConfirmDelete(false)}
-			onConfirm={() => deleteTodo(data)}
-		>
-			Are you sure you want to delete this todo?
-		</ConfirmationModal>
-		
-
-        <Link to="/todos">
-				<Button variant='secondary'>&laquo; All todos</Button>
-		</Link>
-    </>
-  )
+		</>
+	)
 }
 
 export default TodoPage

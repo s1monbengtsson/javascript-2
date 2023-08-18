@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Todo, Todos } from '../types'
+import { Todo, Todos } from '../types/Todo.types'
 import ListGroup from 'react-bootstrap/ListGroup'
 import { Link, useLocation } from 'react-router-dom'
 import * as TodosAPI from '../services/TodosAPI'

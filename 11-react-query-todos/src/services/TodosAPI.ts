@@ -2,7 +2,7 @@
  * Service for communicating with the json-server backend
  */
 import axios from 'axios'
-import { PartialTodo, Todo, Todos } from '../types'
+import { PartialTodo, Todo, Todos } from '../types/Todo.types'
 
 const BASE_URL = 'http://localhost:3000'
 
