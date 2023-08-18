@@ -22,13 +22,18 @@
     },
     {
       "title": "zzzz",
-      "completed": true,
+      "completed": false,
       "id": 5
     },
     {
       "title": "bbbb",
       "completed": false,
       "id": 6
+    },
+    {
+      "title": "fix react query",
+      "completed": false,
+      "id": 7
     }
   ]
 }

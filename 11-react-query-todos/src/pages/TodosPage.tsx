@@ -5,19 +5,29 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import { Link, useLocation } from 'react-router-dom'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
+import TodoCounter from '../components/TodoCounter'
 
 const TodosPage = () => {
-	const [todos, setTodos] = useState<Todos|null>(null)
 	const location = useLocation()
 
-	const { data, error, isFetching } = useQuery({
+	const { data, isError, isFetching } = useQuery({
 		queryKey: ['todos'],
 		queryFn: TodosAPI.getTodos
 	})
 
+	if (!data) {
+		return
+ 	}
+	
+	const finishedTodos = data.filter(todo => todo.completed)
+
 	return (
 		<>
 			<h1 className="mb-3">Todos</h1>
+
+			{isFetching && <p>Loading...</p>}
+
+			{isError && <p>Something went wrong...</p>}
 
 			{location.state?.message && (
 				<Alert variant="success" dismissible>
@@ -42,9 +52,20 @@ const TodosPage = () => {
 				</ListGroup>
 			)}
 
+			{data.length > 0 && (
+				<div className='text-center text-muted mt-2'>
+					<TodoCounter 
+						todos={data.length}
+						finishedTodos={finishedTodos.length}
+					/>
+				</div>
+			)}
+
 			{data && data.length === 0 && (
 				<p>Yayyy, you have 0 todos to do</p>
 			)}
+
+
 
 
 		</>

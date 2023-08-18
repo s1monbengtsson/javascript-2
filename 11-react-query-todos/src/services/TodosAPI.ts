@@ -12,7 +12,7 @@ const BASE_URL = 'http://localhost:3000'
  */
 export const getTodos = async () => {
 	const res = await axios.get(`${BASE_URL}/todos`)
-	return await res.data as Todos
+	return res.data as Todos
 }
 
 /**
@@ -20,7 +20,7 @@ export const getTodos = async () => {
  */
 export const getTodo = async (todo_id: number) => {
 	const res = await axios.get(`${BASE_URL}/todos/${todo_id}`)
-	return await res.data as Todo
+	return res.data as Todo
 }
 
 /**
