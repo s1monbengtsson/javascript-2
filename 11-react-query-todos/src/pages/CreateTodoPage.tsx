@@ -16,6 +16,7 @@ const CreateTodoPage = () => {
 			const createdTodo = await TodosAPI.createTodo(todo)
 			
 			setSuccess(!!createdTodo)
+
 			
 			setTimeout(() => {
 				navigate("/todos")

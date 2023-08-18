@@ -1,31 +1,30 @@
-import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Todo, Todos } from '../types/Todo.types'
 import ListGroup from 'react-bootstrap/ListGroup'
 import { Link, useLocation } from 'react-router-dom'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
 import TodoCounter from '../components/TodoCounter'
+import AddNewTodoForm from '../components/AddNewTodoForm'
+import { Todo } from '../types/Todo.types'
 
 const TodosPage = () => {
 	const location = useLocation()
 
-	const { data, isError, isFetching } = useQuery({
+	const { data, isError, refetch } = useQuery({
 		queryKey: ['todos'],
 		queryFn: TodosAPI.getTodos
 	})
 
-	if (!data) {
-		return
- 	}
+	const addTodo = async (todo: Todo) => {
+		await TodosAPI.createTodo(todo)
+		refetch()
+	}
 	
-	const finishedTodos = data.filter(todo => todo.completed)
-
 	return (
 		<>
 			<h1 className="mb-3">Todos</h1>
 
-			{isFetching && <p>Loading...</p>}
+			<AddNewTodoForm onAddTodo={addTodo}/>
 
 			{isError && <p>Something went wrong...</p>}
 
@@ -36,7 +35,7 @@ const TodosPage = () => {
 			)}
 
 
-			{data && data.length > 0 && (
+			{data && (
 				<ListGroup className="todolist">
 					{data.map(todo => (
 						<ListGroup.Item
@@ -52,11 +51,11 @@ const TodosPage = () => {
 				</ListGroup>
 			)}
 
-			{data.length > 0 && (
+			{data && (
 				<div className='text-center text-muted mt-2'>
 					<TodoCounter 
 						todos={data.length}
-						finishedTodos={finishedTodos.length}
+						finishedTodos={data.filter(todo => todo.completed).length}
 					/>
 				</div>
 			)}
@@ -64,10 +63,6 @@ const TodosPage = () => {
 			{data && data.length === 0 && (
 				<p>Yayyy, you have 0 todos to do</p>
 			)}
-
-
-
-
 		</>
 	)
 }

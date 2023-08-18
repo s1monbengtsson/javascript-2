@@ -10,12 +10,15 @@ import NotFound from './pages/NotFound'
 import CreateTodo from './pages/CreateTodoPage'
 import EditTodoPage from './pages/EditTodoPage'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import GlobalFetchingSpinner from './components/GlobalFetchingSpinner'
 
 
 const App = () => {
 	return (
 		<div id="App">
 			<Navigation/>
+			<GlobalFetchingSpinner />
+			
 			<Container className="py-3">
 				<Routes>
 					<Route path="/" element={<HomePage />} />

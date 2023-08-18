@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import { Link, useParams } from 'react-router-dom'
@@ -14,8 +14,8 @@ const TodoPage = () => {
     const todoId = Number(id)
 	const navigate = useNavigate()
 
-	const { data, error, isFetching } = useQuery({
-		queryKey: ['todo', todoId],
+	const { data, error } = useQuery({
+		queryKey: ['todo', { id: todoId }],
 		queryFn: () => TodosAPI.getTodo(todoId),
 		enabled: !!todoId
 	})
@@ -30,10 +30,11 @@ const TodoPage = () => {
 		const updatedTodo = await TodosAPI.updateTodo(todo.id, {
 			completed: !todo.completed
 		})
+
+		TodosAPI.getTodos()
 	}
 
 	const editTodo = async (todo: Todo) => {
-
 		if (!todo.id) {
 			return
 		}
@@ -67,10 +68,6 @@ const TodoPage = () => {
 	}
 	
 
-    if (isFetching) {
-        return (<p>Loading...</p>)
-    }
-
 	if (error) {
 		navigate(`/todos`, {
 			replace: true,
@@ -84,36 +81,34 @@ const TodoPage = () => {
 		)
 	}
 
-	if (!data) {
-		return
-	}
-
   	return (
 		<>
-			<h1>{data.title}</h1>
+			{data && (
+				<>
+					<h1>{data.title}</h1>
 
-			<p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
+					<p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
 
-			<div className="buttons mb-3">
-				<Button variant="success" onClick={() => toggleTodo(data)}>Toggle</Button>
-				<Link to={`/todos/${data.id}/edit`}>
-					<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>
-				</Link>
-				<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>Delete</Button>
-			</div>
+					<div className="buttons mb-3">
+						<Button variant="success" onClick={() => toggleTodo(data)}>Toggle</Button>
+						<Link to={`/todos/${data.id}/edit`}>
+							<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>
+						</Link>
+						<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>Delete</Button>
+					</div>
 
-			<ConfirmationModal
-				show={showConfirmDelete}
-				onCancel={() => setShowConfirmDelete(false)}
-				onConfirm={() => deleteTodo(data)}
-			>
-				Are you sure you want to delete this todo?
-			</ConfirmationModal>
-			
-
-			<Link to="/todos">
-					<Button variant='secondary'>&laquo; All todos</Button>
-			</Link>
+					<ConfirmationModal
+						show={showConfirmDelete}
+						onCancel={() => setShowConfirmDelete(false)}
+						onConfirm={() => deleteTodo(data)}
+					>
+						Are you sure you want to delete this todo?
+					</ConfirmationModal>
+					<Link to="/todos">
+							<Button variant='secondary'>&laquo; All todos</Button>
+					</Link>
+				</>
+			)}
 		</>
 	)
 }

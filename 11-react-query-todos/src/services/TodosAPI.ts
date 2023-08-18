@@ -6,21 +6,39 @@ import { PartialTodo, Todo, Todos } from '../types/Todo.types'
 
 const BASE_URL = 'http://localhost:3000'
 
+const FAKE_DELAY = 1500
+
+// Create a new axios instance
+const instance = axios.create({
+	baseURL: "http://localhost:3000",
+	timeout: 10000,
+})
+
 /**
- * Get all todos
- * @param todo_id Todo ID to get
+ * Execute a GET request
  */
-export const getTodos = async () => {
-	const res = await axios.get(`${BASE_URL}/todos`)
-	return res.data as Todos
+const get = async <T>(endpoint: string) => {
+	const response = await instance.get<T>(endpoint)
+
+	// Simulate a delay
+	!!FAKE_DELAY && await new Promise(r => setTimeout(r, FAKE_DELAY))
+
+	return response.data
 }
 
 /**
- * Get a single todos
+ * Get all todos
+*/
+export const getTodos = () => {
+	return get<Todos>('/todos')
+}
+
+/**
+ * Get a single todo
  */
-export const getTodo = async (todo_id: number) => {
-	const res = await axios.get(`${BASE_URL}/todos/${todo_id}`)
-	return res.data as Todo
+export const getTodo = (todo_id: number) => {
+	return get<Todo>(`/todos/${todo_id}`)
+
 }
 
 /**
