@@ -6,7 +6,7 @@ import { PartialTodo, Todo, Todos } from '../types/Todo.types'
 
 const BASE_URL = 'http://localhost:3000'
 
-const FAKE_DELAY = 1500
+const FAKE_DELAY = 500
 
 // Create a new axios instance
 const instance = axios.create({

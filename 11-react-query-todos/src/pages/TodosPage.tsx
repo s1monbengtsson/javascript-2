@@ -4,27 +4,18 @@ import { Link, useLocation } from 'react-router-dom'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
 import TodoCounter from '../components/TodoCounter'
-import AddNewTodoForm from '../components/AddNewTodoForm'
-import { Todo } from '../types/Todo.types'
 
 const TodosPage = () => {
 	const location = useLocation()
 
-	const { data, isError, refetch } = useQuery({
+	const { data, isError } = useQuery({
 		queryKey: ['todos'],
 		queryFn: TodosAPI.getTodos
 	})
-
-	const addTodo = async (todo: Todo) => {
-		await TodosAPI.createTodo(todo)
-		refetch()
-	}
 	
 	return (
 		<>
 			<h1 className="mb-3">Todos</h1>
-
-			<AddNewTodoForm onAddTodo={addTodo}/>
 
 			{isError && <p>Something went wrong...</p>}
 

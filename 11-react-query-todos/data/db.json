@@ -1,39 +1,19 @@
 {
   "todos": [
     {
-      "title": "aaa",
-      "completed": true,
+      "title": "1",
+      "completed": false,
       "id": 1
     },
     {
-      "title": "bbb",
-      "completed": true,
-      "id": 2
-    },
-    {
-      "title": "ccc",
+      "title": "3rd",
       "completed": true,
       "id": 3
     },
     {
-      "title": "aaaa",
-      "completed": false,
+      "title": "4th",
+      "completed": true,
       "id": 4
-    },
-    {
-      "title": "zzzz",
-      "completed": false,
-      "id": 5
-    },
-    {
-      "title": "bbbb",
-      "completed": false,
-      "id": 6
-    },
-    {
-      "title": "fix react query",
-      "completed": false,
-      "id": 7
     }
   ]
 }

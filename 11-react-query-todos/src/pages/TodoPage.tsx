@@ -6,7 +6,7 @@ import { Todo } from '../types/Todo.types'
 import * as TodosAPI from '../services/TodosAPI'
 import Alert from 'react-bootstrap/Alert'
 import ConfirmationModal from '../components/ConfirmationModal'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
@@ -14,25 +14,26 @@ const TodoPage = () => {
     const todoId = Number(id)
 	const navigate = useNavigate()
 
+	const queryClient = useQueryClient()
+
 	const { data, error } = useQuery({
 		queryKey: ['todo', { id: todoId }],
 		queryFn: () => TodosAPI.getTodo(todoId),
 		enabled: !!todoId
 	})
 
-	// Toggle the completed status of a todo in the api
-	const toggleTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Update a todo in the api
-		const updatedTodo = await TodosAPI.updateTodo(todo.id, {
+	const toggleTodoMutation = useMutation({
+		mutationKey: ['todos', { id: todoId }],
+		mutationFn: (todo: Todo) => {
+		  return TodosAPI.updateTodo(todoId, {
 			completed: !todo.completed
-		})
-
-		TodosAPI.getTodos()
-	}
+		  })
+		},
+		onSuccess() {
+			queryClient.invalidateQueries(['todo', { id: todoId }])
+			queryClient.invalidateQueries(['todos'])
+		},
+	})
 
 	const editTodo = async (todo: Todo) => {
 		if (!todo.id) {
@@ -48,38 +49,23 @@ const TodoPage = () => {
 		})
 	}
 
+	const deleteTodoMutation = useMutation({
+		mutationKey: ['todos', { id: todoId }],
+		mutationFn: () => {
+		  return TodosAPI.deleteTodo(todoId)
+		},
+		onSuccess() {
+			navigate('/todos', { 
+				replace: true,
+				state: {
+					message: 'Todo was successfully deleted'
+				}
+			})
+			// queryClient.invalidateQueries(['todo', { id: todoId }])
+			queryClient.invalidateQueries(['todos'])
+		},
+	})
 
-	// Delete a todo in the api
-	const deleteTodo = async (todo: Todo) => {
-		if (!todo.id) {
-			return
-		}
-
-		// Delete todo from the api
-		await TodosAPI.deleteTodo(todo.id)
-
-		// navigate user to '/todos'
-		navigate('/todos', { 
-			replace: true,
-			state: {
-				message: `"${todo.title}" was successfully deleted`
-			}
-		})
-	}
-	
-
-	if (error) {
-		navigate(`/todos`, {
-			replace: true,
-		})
-
-		return (	
-			<Alert variant='warning'>
-				<h1>Something went wrong!</h1>
-				<p>{JSON.stringify(error)}</p>
-			</Alert>	
-		)
-	}
 
   	return (
 		<>
@@ -90,7 +76,7 @@ const TodoPage = () => {
 					<p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
 
 					<div className="buttons mb-3">
-						<Button variant="success" onClick={() => toggleTodo(data)}>Toggle</Button>
+						<Button variant="success" onClick={() => toggleTodoMutation.mutate(data)}>Toggle</Button>
 						<Link to={`/todos/${data.id}/edit`}>
 							<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>
 						</Link>
@@ -100,7 +86,7 @@ const TodoPage = () => {
 					<ConfirmationModal
 						show={showConfirmDelete}
 						onCancel={() => setShowConfirmDelete(false)}
-						onConfirm={() => deleteTodo(data)}
+						onConfirm={deleteTodoMutation.mutate}
 					>
 						Are you sure you want to delete this todo?
 					</ConfirmationModal>

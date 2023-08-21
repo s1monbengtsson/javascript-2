@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Todo } from '../types/Todo.types'
-import * as TodosAPI from '../services/TodosAPI'
+import { Todo } from '../types/TodosAPI.types'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IProps {
@@ -10,11 +9,6 @@ interface IProps {
 const AddNewTodoForm: React.FC<IProps> = ({ onAddTodo }) => {
 	const [newTodoTitle, setNewTodoTitle] = useState("")
 	const newTodoTitleRef = useRef<HTMLInputElement>(null)
-
-	// Create a new todo in the API
-	const addTodo = async (todo: Todo) => {
-		await TodosAPI.createTodo(todo)
-	}
 
 	const handleSubmit = (e: React.FormEvent) => {
 		// stop form from submitting
