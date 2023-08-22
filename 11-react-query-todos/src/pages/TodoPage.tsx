@@ -75,7 +75,7 @@ const TodoPage = () => {
 
 					<p><strong>Status:</strong> { data.completed ? 'Completed' : 'Not completed'}</p>
 
-					<div className="buttons mb-3">
+					<div className="buttons mb-3 d-flex gap-1">
 						<Button variant="success" onClick={() => toggleTodoMutation.mutate(data)}>Toggle</Button>
 						<Link to={`/todos/${data.id}/edit`}>
 							<Button variant="warning" onClick={() => editTodo(data)}>Edit</Button>

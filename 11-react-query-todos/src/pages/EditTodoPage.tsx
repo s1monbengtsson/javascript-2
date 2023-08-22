@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
 import * as TodosAPI from '../services/TodosAPI'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
-import { Todo } from '../types/Todo.types'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -13,7 +11,6 @@ const EditTodoPage = () => {
     const navigate = useNavigate()
     const { id } = useParams()
     const todoId = Number(id)
-    const [todo, setTodo] = useState<Todo|null>(null)
     const [newTodoTitle, setNewTodoTitle] = useState("")
 
     const queryClient = useQueryClient()
@@ -21,7 +18,7 @@ const EditTodoPage = () => {
     const { data } = useQuery({
         queryKey: ['todo', { id: todoId }],
         queryFn: () => TodosAPI.getTodo(todoId),
-        enabled: !!todoId
+        enabled: !!todoId,
     })
 
     const editTodoMutation = useMutation({
@@ -31,9 +28,12 @@ const EditTodoPage = () => {
                 title: newTodoTitle
             })
         },
-        onSuccess() {
+        onSuccess: () => {
             queryClient.invalidateQueries(["todo", { id: todoId }])
             queryClient.invalidateQueries(["todos"])
+            setTimeout(() => {
+                navigate(`/todos/${todoId}`)
+            }, 1000)
         }
     })
 
@@ -45,16 +45,14 @@ const EditTodoPage = () => {
                 return
             }
 
-            await TodosAPI.updateTodo(todoId, {
-                title: newTodoTitle
-            })
-
-            editTodoMutation.mutate(todoId)
-
-            setTimeout(() => {
-                navigate(`/todos/${todoId}`)
-            }, 1000)
+            editTodoMutation.mutateAsync(todoId)
 	}
+
+    useEffect(() => {
+		if (data) {
+			setNewTodoTitle(data.title)
+		}
+	}, [data])
 
   return (
     <>
@@ -67,7 +65,7 @@ const EditTodoPage = () => {
                         <Form.Label>Title</Form.Label>
                         <Form.Control 
                             type="text"
-                            placeholder="Enter the new title"
+                            placeholder="Enter new todo title"
                             onChange={(e) => setNewTodoTitle(e.target.value)}
                             value={newTodoTitle}
                         />

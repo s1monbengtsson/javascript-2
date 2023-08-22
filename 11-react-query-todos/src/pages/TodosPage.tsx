@@ -17,7 +17,7 @@ const TodosPage = () => {
 		<>
 			<h1 className="mb-3">Todos</h1>
 
-			{isError && <p>Something went wrong...</p>}
+			{isError && <Alert variant='danger'>Something went wrong...</Alert>}
 
 			{location.state?.message && (
 				<Alert variant="success" dismissible>
@@ -49,10 +49,6 @@ const TodosPage = () => {
 						finishedTodos={data.filter(todo => todo.completed).length}
 					/>
 				</div>
-			)}
-
-			{data && data.length === 0 && (
-				<p>Yayyy, you have 0 todos to do</p>
 			)}
 		</>
 	)
