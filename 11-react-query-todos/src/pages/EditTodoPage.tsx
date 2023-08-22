@@ -76,18 +76,17 @@ const EditTodoPage = () => {
                     </Button>
                 </Form>
 
-                <p><strong>Status:</strong> {data.completed ? 'Completed' : 'Not completed'}</p>
-
-                <Button variant='secondary' onClick={() => navigate(-1)}>&laquo; Go back</Button>
-
-
                 {editTodoMutation.isSuccess && (
-                    <Alert variant="success">Successfully updated Todo Title to: {newTodoTitle}</Alert>
+                    <Alert variant="success" className='mt-2'>Successfully updated Todo Title to: {newTodoTitle}</Alert>
                 )}
 
                 {editTodoMutation.isError && (
                     <Alert variant="danger">{JSON.stringify(editTodoMutation.error)}</Alert>
                 )}
+
+                <p><strong>Status:</strong> {data.completed ? 'Completed' : 'Not completed'}</p>
+
+                <Button variant='secondary' onClick={() => navigate(-1)}>&laquo; Go back</Button>
             </>
         )}
         

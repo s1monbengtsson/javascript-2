@@ -23,9 +23,8 @@ const TodoPage = () => {
 	})
 
 	const toggleTodoMutation = useMutation({
-		mutationKey: ['todos', { id: todoId }],
 		mutationFn: (todo: Todo) => {
-		  return TodosAPI.updateTodo(todoId, {
+			return TodosAPI.updateTodo(todoId, {
 			completed: !todo.completed
 		  })
 		},
@@ -50,10 +49,7 @@ const TodoPage = () => {
 	}
 
 	const deleteTodoMutation = useMutation({
-		mutationKey: ['todos', { id: todoId }],
-		mutationFn: () => {
-		  return TodosAPI.deleteTodo(todoId)
-		},
+		mutationFn: () => TodosAPI.deleteTodo(todoId),
 		onSuccess() {
 			navigate('/todos', { 
 				replace: true,
@@ -61,7 +57,7 @@ const TodoPage = () => {
 					message: 'Todo was successfully deleted'
 				}
 			})
-			// queryClient.invalidateQueries(['todo', { id: todoId }])
+			queryClient.removeQueries(['todo', { id: todoId }])
 			queryClient.invalidateQueries(['todos'])
 		},
 	})
