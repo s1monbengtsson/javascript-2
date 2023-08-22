@@ -3,18 +3,23 @@ import { NewTodo } from '../types/Todo.types'
 import Alert from 'react-bootstrap/Alert'
 import AddNewTodoForm from '../components/AddNewTodoForm'
 import * as TodosAPI from '../services/TodosAPI'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const CreateTodoPage = () => {
 	const navigate = useNavigate()
 	const queryClient = useQueryClient()
 
+	const { data: oldData } = useQuery({
+		queryKey: ['todos'],
+		queryFn: TodosAPI.getTodos
+	})
+
 	const createTodoMutation = useMutation({
 		mutationKey: ['todos'],
 		mutationFn: TodosAPI.createTodo,
 		
-		onSuccess() {
-			queryClient.invalidateQueries(["todos"], { exact: true })
+		onSuccess(data) {
+			queryClient.setQueryData(["todos"], oldData ? [...oldData, data] : [data])
 			setTimeout(() => {
 				navigate('/todos')
 			}, 2000)
@@ -24,7 +29,6 @@ const CreateTodoPage = () => {
 	const addTodo = async (todo: NewTodo) => {
 		await createTodoMutation.mutateAsync(todo)
 	}
-
 	
 	return (
 		<>

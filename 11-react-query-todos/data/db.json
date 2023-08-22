@@ -1,34 +1,24 @@
 {
   "todos": [
     {
-      "title": "3rd",
+      "title": "lol",
       "completed": false,
+      "id": 1
+    },
+    {
+      "title": "eeee",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "testing",
+      "completed": true,
       "id": 3
     },
     {
-      "title": "lul",
-      "completed": true,
+      "title": "qqqq",
+      "completed": false,
       "id": 4
-    },
-    {
-      "title": "hello",
-      "completed": false,
-      "id": 5
-    },
-    {
-      "title": "lol",
-      "completed": false,
-      "id": 6
-    },
-    {
-      "title": "bye",
-      "completed": false,
-      "id": 7
-    },
-    {
-      "title": "hello",
-      "completed": false,
-      "id": 8
     }
   ]
 }
