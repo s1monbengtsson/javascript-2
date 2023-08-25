@@ -1,9 +1,18 @@
+import { toast } from 'react-toastify'
+import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 const HomePage = () => {
 	return (
 		<>
 			<h1>Welcome to Better Todos!</h1>
 
-			<p>This text does not exist.</p>
+			<ButtonGroup>
+				<Button 
+					variant='primary'
+					onClick={() => toast("Wow so cool")}	
+				>Try me
+				</Button>
+			</ButtonGroup>
 		</>
 	)
 }
