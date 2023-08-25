@@ -27,7 +27,7 @@ const get = async <T>(endpoint: string) => {
 	const response = await instance.get<T>(endpoint)
 
 	// Simulate a delay
-	!!FAKE_DELAY && await new Promise((r) => setTimeout(r, FAKE_DELAY))
+	// !!FAKE_DELAY && await new Promise((r) => setTimeout(r, FAKE_DELAY))
 
 	return response.data
 }

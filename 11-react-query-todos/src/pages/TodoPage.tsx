@@ -7,6 +7,7 @@ import { Todo, Todos } from '../types/TodosAPI.types'
 import * as TodosAPI from '../services/TodosAPI'
 import ConfirmationModal from '../components/ConfirmationModal'
 import useTodo from '../hooks/useTodo'
+import useUpdateTodo from '../hooks/useUpdateTodo'
 
 const TodoPage = () => {
 	const [queryEnabled, setQueryEnabled] = useState(true)
@@ -50,22 +51,13 @@ const TodoPage = () => {
 		}
 	})
 
-	const updateTodoCompletedMutation = useMutation({
-		mutationFn: (newCompleted: boolean) => TodosAPI.updateTodo(todoId, {
-			completed: newCompleted,
-		}),
-		onSuccess: () => {
-			// invalidate the query for this specific single todo
-			queryClient.invalidateQueries({ queryKey: ["todo", { id: todoId }] })
-
-			// invalidate the query for all todos
-			queryClient.invalidateQueries({ queryKey: ["todos"] })
-		},
+	const updateTodoCompletedMutation = useUpdateTodo(todoId, (updatedTodo) => {
+		navigate(`/todos/${updatedTodo.id}`)
 	})
 
 	// Toggle the completed status of a todo in the api
 	const toggleTodo = async (todo: Todo) => {
-		updateTodoCompletedMutation.mutate(!todo.completed)
+		updateTodoCompletedMutation.mutate({completed: !todo.completed})
 	}
 
 	if (isError) {
