@@ -1,11 +1,6 @@
 {
   "todos": [
     {
-      "title": "working? working",
-      "completed": true,
-      "id": 12
-    },
-    {
       "title": "yoo",
       "completed": true,
       "id": 13
@@ -14,11 +9,6 @@
       "title": ".....",
       "completed": false,
       "id": 15
-    },
-    {
-      "title": "fast",
-      "completed": false,
-      "id": 16
     },
     {
       "title": "hello",

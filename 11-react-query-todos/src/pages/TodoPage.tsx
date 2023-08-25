@@ -1,21 +1,18 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Todo, Todos } from '../types/TodosAPI.types'
-import * as TodosAPI from '../services/TodosAPI'
+import { Link, useParams } from 'react-router-dom'
+import { Todo } from '../types/TodosAPI.types'
 import ConfirmationModal from '../components/ConfirmationModal'
 import useTodo from '../hooks/useTodo'
 import useUpdateTodo from '../hooks/useUpdateTodo'
+import useDeleteTodo from '../hooks/useDeleteTodo'
 
 const TodoPage = () => {
 	const [queryEnabled, setQueryEnabled] = useState(true)
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
-	const navigate = useNavigate()
 	const { id } = useParams()
 	const todoId = Number(id)
-	const queryClient = useQueryClient()
 
 	const {
 		data: todo,
@@ -24,32 +21,7 @@ const TodoPage = () => {
 		refetch: getTodo,
 	} = useTodo(todoId, queryEnabled)
 
-	const deleteTodoMutation = useMutation({
-		mutationFn: () => TodosAPI.deleteTodo(todoId),
-		onSuccess: () => {
-			// disable query for this specific single todo
-			setQueryEnabled(false)
-
-			// remove the query for this specific single todo
-			queryClient.removeQueries({ queryKey: ["todo", { id: todoId }] })
-
-			// invalidate the query for all todos
-			// queryClient.invalidateQueries({ queryKey: ["todos"] })
-			// modify query cache for ["todos"] and construct a new array with
-			// the deleted todo excluded
-			queryClient.setQueryData<Todos>(["todos"], (prevTodos) => {
-				return prevTodos?.filter(todo => todo.id !== todoId) ?? []
-			})
-
-			// Navigate user to `/todos` (with delete-status as state)
-			navigate('/todos', {
-				replace: true,
-				state: {
-					deleted: true,
-				}
-			})
-		}
-	})
+	const deleteTodoMutation = useDeleteTodo(todoId, () => setQueryEnabled(false))
 
 	const updateTodoCompletedMutation = useUpdateTodo(todoId)
 
