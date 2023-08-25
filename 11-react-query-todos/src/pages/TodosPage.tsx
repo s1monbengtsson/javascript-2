@@ -17,7 +17,7 @@ const TodosPage = () => {
 	const {
 		data: todos,
 		isError,
-	} = useTodos<Todos>()
+	} = useTodos()
 
 	const createTodoMutation = useMutation({
 		mutationFn: TodosAPI.createTodo,

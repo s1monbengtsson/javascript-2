@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { getTodos } from '../services/TodosAPI'
 
-const useTodos = <T = any>() => {
-	return useQuery<T>(['todos'], getTodos)
+const useTodos = () => {
+	return useQuery(['todos'], getTodos)
 }
 
 export default useTodos
