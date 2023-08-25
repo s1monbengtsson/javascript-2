@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
@@ -21,7 +21,7 @@ const TodoPage = () => {
 		isError,
 		isLoading,
 		refetch: getTodo,
-	} = useTodo(todoId)
+	} = useTodo(todoId, queryEnabled)
 
 	const deleteTodoMutation = useMutation({
 		mutationFn: () => TodosAPI.deleteTodo(todoId),

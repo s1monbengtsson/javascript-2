@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { useNavigate, useParams } from 'react-router-dom'
 import * as TodosAPI from '../services/TodosAPI'
+import useTodo from '../hooks/useTodo'
 
 const EditTodoPage = () => {
 	const [newTodoTitle, setNewTodoTitle] = useState("")
@@ -18,7 +19,7 @@ const EditTodoPage = () => {
 		isError,
 		isLoading,
 		refetch: getTodo,
-	} = useQuery(["todo", { id: todoId }], () => TodosAPI.getTodo(todoId))
+	}= useTodo(todoId)
 
 	const updateTodoTitleMutation = useMutation({
 		mutationFn: (newTodoTitle: string) => TodosAPI.updateTodo(todoId, {
