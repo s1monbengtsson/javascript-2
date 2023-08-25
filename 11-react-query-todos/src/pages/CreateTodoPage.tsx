@@ -4,22 +4,11 @@ import Alert from 'react-bootstrap/Alert'
 import { NewTodo } from '../types/TodosAPI.types'
 import AddNewTodoForm from '../components/AddNewTodoForm'
 import * as TodosAPI from '../services/TodosAPI'
-
+import useCreateTodo from '../hooks/useCreateTodo'
 const CreateTodoPage = () => {
-	const navigate = useNavigate()
-	const queryClient = useQueryClient()
 
-	const createTodoMutation = useMutation({
-		mutationFn: TodosAPI.createTodo,
-		onSuccess: () => {
-			// invalidate any ["todos"] queries
-			queryClient.invalidateQueries({ queryKey: ["todos"] })
 
-			setTimeout(() => {
-				navigate("/todos")
-			}, 2000)
-		}
-	})
+	const createTodoMutation = useCreateTodo()
 
 	// Create a new todo in the API
 	const addTodo = async (todo: NewTodo) => {

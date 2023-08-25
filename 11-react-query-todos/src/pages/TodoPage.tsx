@@ -51,9 +51,7 @@ const TodoPage = () => {
 		}
 	})
 
-	const updateTodoCompletedMutation = useUpdateTodo(todoId, (updatedTodo) => {
-		navigate(`/todos/${updatedTodo.id}`)
-	})
+	const updateTodoCompletedMutation = useUpdateTodo(todoId)
 
 	// Toggle the completed status of a todo in the api
 	const toggleTodo = async (todo: Todo) => {
