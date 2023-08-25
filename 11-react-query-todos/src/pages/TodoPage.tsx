@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Todo, Todos } from '../types/TodosAPI.types'
 import * as TodosAPI from '../services/TodosAPI'
 import ConfirmationModal from '../components/ConfirmationModal'
+import useTodo from '../hooks/useTodo'
 
 const TodoPage = () => {
 	const [queryEnabled, setQueryEnabled] = useState(true)
@@ -20,7 +21,7 @@ const TodoPage = () => {
 		isError,
 		isLoading,
 		refetch: getTodo,
-	} = useQuery(["todo", { id: todoId }], () => TodosAPI.getTodo(todoId), { enabled: queryEnabled })
+	} = useTodo(todoId)
 
 	const deleteTodoMutation = useMutation({
 		mutationFn: () => TodosAPI.deleteTodo(todoId),

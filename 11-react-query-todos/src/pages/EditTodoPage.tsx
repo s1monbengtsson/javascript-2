@@ -24,7 +24,7 @@ const EditTodoPage = () => {
 		mutationFn: (newTodoTitle: string) => TodosAPI.updateTodo(todoId, {
 			title: newTodoTitle,
 		}),
-		onSuccess: async (updatedTodo) => {
+		onSuccess: (updatedTodo) => {
 			// set the response from the mutation as the query cache for the specific single todo
 			queryClient.setQueryData(["todo", { id: todoId }], updatedTodo)
 

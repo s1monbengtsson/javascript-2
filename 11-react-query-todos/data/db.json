@@ -1,18 +1,18 @@
 {
   "todos": [
     {
-      "title": "Learn about the benefits of mutations",
+      "title": "wooo",
       "completed": false,
       "id": 12
     },
     {
       "title": "Learn about query invalidation",
-      "completed": false,
+      "completed": true,
       "id": 13
     },
     {
       "title": "Learn even more about query invalidations and prefetching",
-      "completed": false,
+      "completed": true,
       "id": 15
     }
   ]
