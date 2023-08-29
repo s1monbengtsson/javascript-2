@@ -1,5 +1,6 @@
 import WarningAlert from '../components/alerts/WarningAlert'
 import AuthorList from '../components/AuthorList'
+import AuthorsTable from '../components/AuthorsTable'
 import useAuthors from '../hooks/useAuthors'
 
 const AuthorsPage = () => {
@@ -19,7 +20,7 @@ const AuthorsPage = () => {
 				<p>Loading authors...</p>
 			)}
 
-			{authors && <AuthorList authors={authors} />}
+			{authors && <AuthorsTable authors={authors} />}
 		</>
 	)
 }
