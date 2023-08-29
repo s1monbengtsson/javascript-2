@@ -1,4 +1,5 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { AnimatePresence } from 'framer-motion'
 import Container from 'react-bootstrap/Container'
 import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
@@ -18,15 +19,17 @@ const App = () => {
 			<GlobalLoadingSpinner />
 
 			<Container className="py-3">
-				<Routes>
-					<Route path="/" element={<HomePage />} />
+				<AnimatePresence mode="wait">
+					<Routes>
+						<Route path="/" element={<HomePage />} />
 
-					<Route path="/authors" element={<AuthorsPage />} />
-					<Route path="/authors/:id" element={<AuthorPage />} />
-					<Route path="/books" element={<BooksPage />} />
+						<Route path="/authors" element={<AuthorsPage />} />
+						<Route path="/authors/:id" element={<AuthorPage />} />
+						<Route path="/books" element={<BooksPage />} />
 
-					<Route path="*" element={<NotFound />} />
-				</Routes>
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</AnimatePresence>
 			</Container>
 
 			<ReactQueryDevtools initialIsOpen={false} position='bottom-right' />

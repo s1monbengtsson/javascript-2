@@ -1,13 +1,13 @@
 import WarningAlert from '../components/alerts/WarningAlert'
-import AuthorList from '../components/AuthorList'
-import AuthorsTable from '../components/AuthorsTable'
+import PageTransition from '../components/animations/PageTransition'
+import BSAuthorTable from '../components/BSAuthorTable'
 import useAuthors from '../hooks/useAuthors'
 
 const AuthorsPage = () => {
 	const { data: authors, isError, isLoading } = useAuthors()
 
 	return (
-		<>
+		<PageTransition key="authors-page">
 			<h1 className="mb-3">Authors</h1>
 
 			{isError && (
@@ -20,8 +20,8 @@ const AuthorsPage = () => {
 				<p>Loading authors...</p>
 			)}
 
-			{authors && <AuthorsTable authors={authors} />}
-		</>
+			{authors && <BSAuthorTable authors={authors} />}
+		</PageTransition>
 	)
 }
 

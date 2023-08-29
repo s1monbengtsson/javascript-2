@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import WarningAlert from '../components/alerts/WarningAlert'
+import PageTransition from '../components/animations/PageTransition'
 import useAuthor from '../hooks/useAuthor'
 
 const AuthorPage = () => {
@@ -8,7 +9,7 @@ const AuthorPage = () => {
 	const { data: author, isError, isLoading } = useAuthor(authorId)
 
 	return (
-		<>
+		<PageTransition key="author-page">
 			{isError && (
 				<WarningAlert>
 					An terrible, inexplicable error occurred while fetching authors. It wasn't me!
@@ -30,7 +31,7 @@ const AuthorPage = () => {
 					))}
 				</ul>
 			</>}
-		</>
+		</PageTransition>
 	)
 }
 
