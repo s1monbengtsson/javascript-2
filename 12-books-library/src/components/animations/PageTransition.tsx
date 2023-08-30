@@ -68,13 +68,13 @@ const spring = {
 
 interface IProps {
 	children: React.ReactNode
-	key: React.Key
+	page: React.Key
 }
 
-const PageTransition: React.FC<IProps> = ({ children, key }) => {
+const PageTransition: React.FC<IProps> = ({ children, page }) => {
 	return (
 		<motion.div
-			key={key}
+			key={page}
 			variants={spring}
 			initial="initial"
 			animate="enter"

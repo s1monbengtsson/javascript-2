@@ -12,10 +12,6 @@ h1, h2, h3, h4, h5, h6 {
 	right: 3.5rem;
 }
 
-.todolist {
-	.done {
-		color: $success;
-		font-style: italic;
-		text-decoration: line-through;
-	}
+.cursor-pointer  {
+	cursor: pointer;
 }

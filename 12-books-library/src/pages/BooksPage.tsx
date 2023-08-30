@@ -1,9 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
 import WarningAlert from '../components/alerts/WarningAlert'
 import PageTransition from '../components/animations/PageTransition'
-import TanstackBasicTable from '../components/TanstackBasicTable'
 import useBooks from '../hooks/useBooks'
 import { Book } from '../types/BooksAPI.types'
+import TanstackSortableTable from '../components/TanstackSortedTable'
+import BSBookTable from '../components/BSBookTable'
 
 const columns: ColumnDef<Book>[] = [
 	{
@@ -28,7 +29,7 @@ const BooksPage = () => {
 	const { data: books, isError, isLoading } = useBooks()
 
 	return (
-		<PageTransition key="books-page">
+		<PageTransition page="books-page">
 			<h1 className="mb-3">Books</h1>
 
 			{isError && (
@@ -41,7 +42,7 @@ const BooksPage = () => {
 				<p>Loading books...</p>
 			)}
 
-			{books && <TanstackBasicTable columns={columns} data={books} />}
+			{books && <BSBookTable books={books} />}
 		</PageTransition>
 	)
 }
