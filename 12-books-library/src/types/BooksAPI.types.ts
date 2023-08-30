@@ -11,7 +11,7 @@ export type Book = {
 	authorId: number
 	author: Author
 }
-export type NewBook = Omit<Book, "id">
+export type NewBook = Omit<Book, "id" | "author">
 export type PartialBook = Partial<Book>
 
 // Author types
