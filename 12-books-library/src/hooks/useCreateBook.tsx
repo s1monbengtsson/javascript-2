@@ -23,7 +23,7 @@ const useCreateBook = () => {
 				queryKey: ['books']
 			})
 
-			// invalidate author with book id
+			// invalidate the author that we created the book on
 			queryClient.invalidateQueries({
 				queryKey: ['author', { id: newbook.authorId}]
 			})
