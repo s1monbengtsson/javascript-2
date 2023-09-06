@@ -1,56 +1,55 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { NewTodo } from '../types/Todo.types'
+import { useForm } from 'react-hook-form'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IProps {
-	onAddTodo: (todo: NewTodo) => void
+type Props = {
+	onAddTodo: (todo: any) => void
 }
 
-const AddNewTodoForm: React.FC<IProps> = ({ onAddTodo }) => {
-	const [newTodoTitle, setNewTodoTitle] = useState("")
-	const newTodoTitleRef = useRef<HTMLInputElement>(null)
+const AddNewTodoForm: React.FC<Props> = ({ onAddTodo }) => {
 
-	const handleSubmit = (e: React.FormEvent) => {
-		// stop form from submitting
-		e.preventDefault()
+	const { handleSubmit, register, reset, formState: { errors } } = useForm<NewTodo>()
 
-		// create a new todo and set a new todos state
-		const newTodo: NewTodo = {
-			title: newTodoTitle,
-			completed: false,
+	const onSubmit = async (data: NewTodo) => {
+		console.log("Submitted data:", data)
+
+		// creates a the new todo, which is 
+		//then sent as a param for `onAddTodo`
+		const newTodo = {
+			title: data.title,
+			completed: false
 		}
-		onAddTodo(newTodo)   // <-- calls `addTodo()` in `App.tsx`
 
-		// clear newTodoTitle state
-		setNewTodoTitle("")
+		onAddTodo(newTodo)
+
+		// resets the form after submit
+		reset()
 	}
 
-	// On component mount, focus on input field
-	useEffect(() => {
-		newTodoTitleRef.current?.focus()
-	}, [])
-
-	// console.log("AddNewTodoForm rendering...")
-
 	return (
-		<form onSubmit={handleSubmit} className="mb-3">
-			<div className="input-group">
-				<input
-					ref={newTodoTitleRef}
+		<Form onSubmit={handleSubmit(onSubmit)}>
+			<Form.Group className="mb-3" controlId="name">
+				<Form.Label>New Todo Title</Form.Label>
+				<Form.Control
 					type="text"
-					className="form-control"
-					placeholder="Todo title"
-					onChange={e => setNewTodoTitle(e.target.value)}
-					value={newTodoTitle}
+					placeholder="LeArN tO cOdE"
+					{...register('title', {
+						required: true,
+						minLength: 3,
+					})}
 				/>
+				{errors.title && <p className="text-danger">Y U ENTER TOO SHORT TITLE?!</p>}
+			</Form.Group>
 
-				<button
-					disabled={!newTodoTitle.trim()}
+			<div className="d-flex justify-content-end">
+				<Button
+					variant="success"
 					type="submit"
-					className="btn btn-success"
-				>Create</button>
+				>Create</Button>
 			</div>
-		</form>
+		</Form>
 	)
 }
 

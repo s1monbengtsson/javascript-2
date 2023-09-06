@@ -1,63 +1,50 @@
-import { collection, getDocs } from 'firebase/firestore'
-import { useEffect, useState } from "react"
 import ListGroup from "react-bootstrap/ListGroup"
 import { Link } from "react-router-dom"
 import AddNewTodoForm from "../components/AddNewTodoForm"
-import { NewTodo, Todo, Todos } from "../types/Todo.types"
-import { db } from '../servies/firebase'
+import { NewTodo } from "../types/Todo.types"
 import Button from 'react-bootstrap/Button'
+import useGetCollection from "../hooks/useGetCollection"
+import { Timestamp, addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { db } from "../servies/firebase"
 
 
 const TodosPage = () => {
-	const [todos, setTodos] = useState<Todos|null>(null)
-	const [loading, setLoading] = useState(false)
 
+
+	const { loading, todos, getCollection } = useGetCollection("todos")
 
 	// Create a new todo in the API
-	const addTodo = (todo: NewTodo) => {
+	const addTodo = async (todo: NewTodo) => {
 		// 👻
-		console.log("Would add a new todo:", todo)
-	}
 
-	const getTodos = async () => {
-		setLoading(true)
-		// get reference to collection todos
-		const colRef = collection(db, "todos")
 
-		// get query snapshot of collection
-		const snapshot = await getDocs(colRef)
-
-		// loop over all docs
-		const data = snapshot.docs.map(doc => {
-			return {
-				_id: doc.id,
-				...doc.data()
-			} as Todo
+		
+		await addDoc(collection(db, "todos"), {
+			title: todo.title,
+			completed: false,
+			created_at: serverTimestamp()
 		})
 
-		setTodos(data)
-		setLoading(false)
+		getCollection("todos")
 	}
 
-	// Get todos on component mount
-	useEffect(() => {
-		getTodos()
-	}, [])
+	// const { loading, data: todos } = useGetTodos("todos")
 
 	return (
 		<>
-
 			<div className="d-flex justify-content-between">
 				<h1 className="mb-3">Todos</h1>
 				<div className='d-flex align-items-center'>
-					<Button variant='primary'>Refresh</Button>
+					<Button 
+						variant='primary'
+						onClick={() => console.log("wow")}
+					>Refresh</Button>
 				</div>
 			</div>
 
 			<AddNewTodoForm onAddTodo={addTodo} />
 
 			{loading && <p>Loading todos...</p>}
-
 
 			{todos && todos.length > 0 && (
 				<ListGroup className="todolist">

@@ -1,22 +1,55 @@
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
-import { Link, useParams } from "react-router-dom"
-import { Todo } from "../types/Todo.types"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import ConfirmationModal from "../components/ConfirmationModal"
-
-const todo: Todo = {
-	id: "133713371337",
-	title: "Learn to fake better data 😅",
-	completed: true,
-}
+import useGetTodo from "../hooks/useGetTodo"
+import { doc, deleteDoc, updateDoc } from "firebase/firestore"
+import { db } from "../servies/firebase"
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
 	const { id } = useParams()
-	const todoId = Number(id)
+
+	const documentId = id as string
+	
+	const { data: todo, loading, getData: getTodo } = useGetTodo(documentId)
+	// const { loading, data: todo, getTodo } = useGetDocument("todos", todoId)
+
+	const navigate = useNavigate()
+
+	if (!todo) {
+		return
+	}
+
+	const timestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000
+	const createdAt = new Date(timestamp).toLocaleString()
+
+	console.log("created at:", createdAt)
+
+
+	const toggleTodo = async () => {
+
+		const todoRef = doc(db, "todos", documentId)
+
+		await updateDoc(todoRef, {
+			completed: !todo?.completed
+		})
+
+		getTodo()
+	}
+
+	const deleteTodo = async () => {
+
+		await deleteDoc(doc(db, "todos", documentId))
+
+		navigate('/todos', {
+			replace: true
+		})
+	}
 
 	return (
 		<>
+			{loading && <p>Loading...</p>}
 			<h1>{todo.title}</h1>
 
 			<p>
@@ -24,15 +57,20 @@ const TodoPage = () => {
 				{todo.completed ? "Completed" : "Not completed"}
 			</p>
 
+			<p>
+				<strong>Created At:</strong>{" "}
+				{createdAt}
+			</p>
+
 			<div className="buttons mb-3">
 				<Button
 					variant="success"
-					onClick={() => console.log("Would toggle todo")}
+					onClick={toggleTodo}
 				>
 					Toggle
 				</Button>
 
-				<Link to={`/todos/${todoId}/edit`}>
+				<Link to={`/todos/${todo._id}/edit`}>
 					<Button variant="warning">Edit</Button>
 				</Link>
 
@@ -47,9 +85,7 @@ const TodoPage = () => {
 			<ConfirmationModal
 				show={showConfirmDelete}
 				onCancel={() => setShowConfirmDelete(false)}
-				onConfirm={() =>
-					console.log("Would delete todo with id:", todoId)
-				}
+				onConfirm={deleteTodo}
 			>
 				U SURE BRO?!
 			</ConfirmationModal>
