@@ -3,53 +3,66 @@ import Form from 'react-bootstrap/Form'
 import { useNavigate, useParams } from 'react-router-dom'
 import useGetTodo from '../hooks/useGetTodo'
 import { useState } from 'react'
+import { db, todosCol } from '../servies/firebase'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../servies/firebase'
+import { toast } from 'react-toastify'
+
+type FormData = {
+	title: string
+}
 
 const EditTodoPage = () => {
+	const { handleSubmit, register, formState: { errors } } = useForm<FormData>()
 	const navigate = useNavigate()
 	const { id } = useParams()
 
-	const [newTodoTitle, setNewTodoTitle] = useState("")
 	const documentId = id as string
+
 	const { data: todo, loading, getData: getTodo } = useGetTodo(documentId)
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
+	if (loading || !todo) {
+		return <p>Loading todo...</p>
+	}
 
-		const todoRef = doc(db, "todos", documentId)
+	const onFormSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+		if (!id) {
+			return
+		}
 
-		await updateDoc(todoRef, {
-			title: newTodoTitle
-		})
+		const docRef = doc(todosCol, documentId)
 
-		getTodo()
+		await updateDoc(docRef, data)
 
-		setNewTodoTitle("")
+		toast.success("Todo was successfully updated!")
+
+		await getTodo()
 
 		navigate(`/todos/${documentId}`)
 
-	}
-	
-	if (!todo) {
-		return
 	}
 	
 	return (
 		<>
 			<h1>Edit: {todo.title}</h1>
 
-			<Form onSubmit={handleSubmit} className='mb-4'>
+			<Form onSubmit={handleSubmit(onFormSubmit)} className='mb-4'>
 				<Form.Group className="mb-3" controlId="title">
 					<Form.Label>Title</Form.Label>
 					<Form.Control
-						onChange={e => setNewTodoTitle(e.target.value)}
+						defaultValue={todo.title}
 						type="text"
-						placeholder="Enter the new title"
+						{...register('title', {
+							required: "Todo has to have a title",
+							minLength: {
+								value: 3,
+								message: "That title is too short"
+							}
+						})}
 					/>
 				</Form.Group>
 
-				<Button variant="primary" type="submit" disabled={false}>
+				<Button variant="primary" type="submit">
 					Save
 				</Button>
 			</Form>

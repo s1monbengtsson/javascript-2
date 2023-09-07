@@ -3,22 +3,32 @@ import { Link } from "react-router-dom"
 import AddNewTodoForm from "../components/AddNewTodoForm"
 import { NewTodo } from "../types/Todo.types"
 import Button from 'react-bootstrap/Button'
-import { addDoc, collection, serverTimestamp } from "firebase/firestore"
-import { db } from "../servies/firebase"
+import { addDoc, doc, setDoc } from "firebase/firestore"
+import { todosCol } from "../servies/firebase"
 import useGetTodos from "../hooks/useGetTodos"
+import { toast } from 'react-toastify'
 
 
 const TodosPage = () => {
 	const { loading, data: todos, getData } = useGetTodos()
 
-	// Create a new todo in the API
 	const addTodo = async (todo: NewTodo) => {
 
-		await addDoc(collection(db, "todos"), {
-			title: todo.title,
-			completed: false,
-			created_at: serverTimestamp()
-		})
+		// adds a new doc with an auto generated ID
+		const docRef = doc(todosCol)
+
+		// sets the content of the doc
+		// await setDoc(docRef, todo)
+
+		await addDoc(todosCol, todo)
+
+		// await addDoc(collection(db, "todos"), {
+		// 	title: todo.title,
+		// 	completed: false,
+		// 	created_at: serverTimestamp()
+		// })
+
+		toast.success("Created new todo")
 		
 		getData()
 	}

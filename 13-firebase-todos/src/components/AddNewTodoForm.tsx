@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NewTodo } from '../types/Todo.types'
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import Form from 'react-bootstrap/Form'
+import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
+import { serverTimestamp } from 'firebase/firestore'
 
 type Props = {
 	onAddTodo: (todo: any) => void
@@ -10,45 +12,49 @@ type Props = {
 
 const AddNewTodoForm: React.FC<Props> = ({ onAddTodo }) => {
 
-	const { handleSubmit, register, reset, formState: { errors } } = useForm<NewTodo>()
+	const { handleSubmit, register, reset, formState: { errors, isSubmitSuccessful } } = useForm<NewTodo>()
 
-	const onSubmit = async (data: NewTodo) => {
-		console.log("Submitted data:", data)
-
+	const onFormSubmit: SubmitHandler<NewTodo> = async (data: NewTodo) => {
 		// creates a the new todo, which is 
 		//then sent as a param for `onAddTodo`
 		const newTodo = {
 			title: data.title,
-			completed: false
+			completed: false,
+			created_at: serverTimestamp()
 		}
 
 		onAddTodo(newTodo)
-
-		// resets the form after submit
-		reset()
 	}
 
+	useEffect(() => {
+		reset({
+			title: '',
+		})
+	}, [isSubmitSuccessful])
+
+
+
 	return (
-		<Form onSubmit={handleSubmit(onSubmit)}>
-			<Form.Group className="mb-3" controlId="name">
-				<Form.Label>New Todo Title</Form.Label>
+		<Form onSubmit={handleSubmit(onFormSubmit)} className='mb-3'>
+
+			<InputGroup>
 				<Form.Control
+				aria-label='The title of the new Todo'
 					type="text"
 					placeholder="LeArN tO cOdE"
 					{...register('title', {
-						required: true,
-						minLength: 3,
+						required: "Can not create an empty todo",
+						minLength: 3
 					})}
 				/>
-				{errors.title && <p className="text-danger">Y U ENTER TOO SHORT TITLE?!</p>}
-			</Form.Group>
-
-			<div className="d-flex justify-content-end">
-				<Button
-					variant="success"
-					type="submit"
-				>Create</Button>
-			</div>
+				<div className="d-flex justify-content-end">
+					<Button
+						variant="success"
+						type="submit"
+					>Create</Button>
+				</div>
+			</InputGroup>
+			{errors.title && <p className="text-danger">Too short title...</p>}
 		</Form>
 	)
 }
