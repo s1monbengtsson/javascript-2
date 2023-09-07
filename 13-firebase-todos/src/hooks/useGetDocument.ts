@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react"
-import { Todo } from "../types/Todo.types"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "../servies/firebase"
+import { CollectionReference, doc, getDoc } from "firebase/firestore"
 
-const useGetDocument = (colRef: string, id: string) => {
+const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) => {
+    const [data, setData] = useState<T|null>(null)
     const [loading, setLoading] = useState(false)
-    const [todo, setTodo] = useState<Todo|null>(null)
+    const [_error, setError] = useState(false)
 
 
-    useEffect(() => {
-        const getDocument = async (colRef: string, id: string) => {
+        const getData = async () => {
             setLoading(true)
-            const docRef = doc(db, colRef, String(id))
+            const docRef = doc(colRef, documentId)
 			const docSnap = await getDoc(docRef)
-	
-			const data = docSnap.data() as Todo
 
-			setTodo(data)
+            if (!docSnap.exists()) {
+                setData(null)
+                setError(true)
+                setLoading(false)
+                return
+            }
+	
+			const data: T = {
+                ...docSnap.data(),
+                _id: docSnap.id
+            }
+
+			setData(data)
             setLoading(false)
         }
 
-        getDocument(colRef, id)
-    }, [])
 
-    return { loading, todo }
+        useEffect(() => {
+            getData()
+        }, [])
+
+    return { loading, data, getData }
 }
 
 export default useGetDocument

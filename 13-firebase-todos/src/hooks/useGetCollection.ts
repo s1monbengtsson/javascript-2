@@ -1,32 +1,32 @@
-import { collection, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "../servies/firebase";
-import { Todo, Todos } from "../types/Todo.types";
+import { CollectionReference, getDocs } from "firebase/firestore"
+import { useEffect, useState } from "react"
 
-const useGetCollection = (col:string) => {
-    const [todos, setTodos] = useState<Todos|null>(null)
+const useGetCollection = <T>(colRef: CollectionReference<T>) => {
+    const [data, setData] = useState<T[]|null>(null)
     const [loading, setLoading] = useState(false)
 
-    
-        const getCollection = async (col: string) => {
-            setLoading(true)
+    const getData = async () => {
+        setLoading(true)
 
-            const querySnapshot = await getDocs(collection(db, col));
-            const data = querySnapshot.docs.map((doc) => ({
-                _id: doc.id,
+        const snapshot = await getDocs(colRef)
+
+        const data: T[] = snapshot.docs.map(doc => {
+            return {
                 ...doc.data(),
-            } as Todo))
+                _id: doc.id
+            }
+        })
 
-            setTodos(data)
-            setLoading(false)
-        }
+        setData(data)
+        setLoading(false)
+    }
 
 
     useEffect(() => {
-        getCollection(col)
+        getData()
     }, [])
 
-    return { todos, loading, getCollection }
+    return { data, loading, getData }
 }
 
 export default useGetCollection

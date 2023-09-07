@@ -3,32 +3,25 @@ import { Link } from "react-router-dom"
 import AddNewTodoForm from "../components/AddNewTodoForm"
 import { NewTodo } from "../types/Todo.types"
 import Button from 'react-bootstrap/Button'
-import useGetCollection from "../hooks/useGetCollection"
-import { Timestamp, addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp } from "firebase/firestore"
 import { db } from "../servies/firebase"
+import useGetTodos from "../hooks/useGetTodos"
 
 
 const TodosPage = () => {
-
-
-	const { loading, todos, getCollection } = useGetCollection("todos")
+	const { loading, data: todos, getData } = useGetTodos()
 
 	// Create a new todo in the API
 	const addTodo = async (todo: NewTodo) => {
-		// 👻
 
-
-		
 		await addDoc(collection(db, "todos"), {
 			title: todo.title,
 			completed: false,
 			created_at: serverTimestamp()
 		})
-
-		getCollection("todos")
+		
+		getData()
 	}
-
-	// const { loading, data: todos } = useGetTodos("todos")
 
 	return (
 		<>
@@ -37,7 +30,7 @@ const TodosPage = () => {
 				<div className='d-flex align-items-center'>
 					<Button 
 						variant='primary'
-						onClick={() => console.log("wow")}
+						onClick={getData}
 					>Refresh</Button>
 				</div>
 			</div>

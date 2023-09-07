@@ -13,7 +13,6 @@ const TodoPage = () => {
 	const documentId = id as string
 	
 	const { data: todo, loading, getData: getTodo } = useGetTodo(documentId)
-	// const { loading, data: todo, getTodo } = useGetDocument("todos", todoId)
 
 	const navigate = useNavigate()
 
@@ -23,9 +22,6 @@ const TodoPage = () => {
 
 	const timestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000
 	const createdAt = new Date(timestamp).toLocaleString()
-
-	console.log("created at:", createdAt)
-
 
 	const toggleTodo = async () => {
 
