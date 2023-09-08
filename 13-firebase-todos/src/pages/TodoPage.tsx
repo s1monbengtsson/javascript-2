@@ -1,4 +1,4 @@
-import { doc, deleteDoc } from 'firebase/firestore'
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
 import { Link, useNavigate, useParams } from "react-router-dom"
@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import ConfirmationModal from "../components/ConfirmationModal"
 import useGetTodo from "../hooks/useGetTodo"
 import { todosCol } from '../services/firebase'
+import { TodoFormData } from '../types/Todo.types'
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
@@ -18,6 +19,20 @@ const TodoPage = () => {
 		data: todo,
 		loading
 	} = useGetTodo(documentId)
+
+	const toggleTodo = async (data: TodoFormData) => {
+		// Get a reference to the document
+		const docRef = doc(todosCol, documentId)
+
+		// Set the contents of the document
+		toast.promise(updateDoc(docRef, {
+			completed: !data.completed
+		}), {
+			pending: "🤔 Saving todo...",
+			success: "🤩 Todo was saved successfully",
+			error: "😬 Unable to save todo"
+		})
+	}
 
 	const deleteTodo = async () => {
 		// Get a reference to the document
@@ -54,7 +69,7 @@ const TodoPage = () => {
 			<div className="buttons mb-3">
 				<Button
 					variant="success"
-					onClick={() => console.log("Would toggle todo")}
+					onClick={() => toggleTodo(todo)}
 				>
 					Toggle
 				</Button>
