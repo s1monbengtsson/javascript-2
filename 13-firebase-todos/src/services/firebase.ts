@@ -1,9 +1,9 @@
 import { initializeApp } from "firebase/app"
 import { CollectionReference, collection, DocumentData, getFirestore } from "firebase/firestore"
 import { NewTodo, Todo } from "../types/Todo.types"
+import { getAuth } from "firebase/auth"
 
 // Your web app's Firebase configuration
-
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
 	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -15,6 +15,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
+
+// Get Auth instance
+export const auth = getAuth(app)
+
 
 // Get Firestore instance
 export const db = getFirestore(app)
