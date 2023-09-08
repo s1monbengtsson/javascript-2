@@ -1,60 +1,49 @@
 import React, { useEffect } from 'react'
-import { NewTodo } from '../types/Todo.types'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
-import Button from 'react-bootstrap/Button'
-import { serverTimestamp } from 'firebase/firestore'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { TodoFormData } from '../types/Todo.types'
 
-type Props = {
-	onAddTodo: (todo: any) => void
+interface IProps {
+	onAddTodo: (data: TodoFormData) => Promise<void>
 }
 
-const AddNewTodoForm: React.FC<Props> = ({ onAddTodo }) => {
+const AddNewTodoForm: React.FC<IProps> = ({ onAddTodo }) => {
+	const { handleSubmit, register, formState: { errors, isSubmitSuccessful }, reset } = useForm<TodoFormData>()
 
-	const { handleSubmit, register, reset, formState: { errors, isSubmitSuccessful } } = useForm<NewTodo>()
-
-	const onFormSubmit: SubmitHandler<NewTodo> = async (data: NewTodo) => {
-		// creates a the new todo, which is 
-		//then sent as a param for `onAddTodo`
-		const newTodo = {
-			title: data.title,
-			completed: false,
-			created_at: serverTimestamp()
-		}
-
-		onAddTodo(newTodo)
+	const onFormSubmit: SubmitHandler<TodoFormData> = async (data: TodoFormData) => {
+		// Pass form data along to parent component
+		await onAddTodo(data)   // <-- calls `addTodo()` in `App.tsx`
 	}
 
 	useEffect(() => {
-		reset({
-			title: '',
-		})
-	}, [isSubmitSuccessful])
-
-
+		// Reset form when submit is successful
+		reset()
+	}, [isSubmitSuccessful, reset])
 
 	return (
-		<Form onSubmit={handleSubmit(onFormSubmit)} className='mb-3'>
-
+		<Form onSubmit={handleSubmit(onFormSubmit)} className="mb-3">
 			<InputGroup>
 				<Form.Control
-				aria-label='The title of the new Todo'
 					type="text"
-					placeholder="LeArN tO cOdE"
+					className="form-control"
+					aria-label="The title of the new Todo"
 					{...register('title', {
-						required: "Can not create an empty todo",
-						minLength: 3
+						required: "You have to write something at least...",
+						minLength: {
+							value: 5,
+							message: "That's too short to be a todo, better do it right now instead!"
+						},
 					})}
 				/>
-				<div className="d-flex justify-content-end">
-					<Button
-						variant="success"
-						type="submit"
-					>Create</Button>
-				</div>
+
+				<Button
+					type="submit"
+					variant="success"
+				>Create</Button>
 			</InputGroup>
-			{errors.title && <p className="text-danger">Too short title...</p>}
+			{errors.title && <p className="invalid">{errors.title.message ?? "Invalid value"}</p>}
 		</Form>
 	)
 }

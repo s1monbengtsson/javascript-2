@@ -1,51 +1,41 @@
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import ListGroup from "react-bootstrap/ListGroup"
 import { Link } from "react-router-dom"
-import AddNewTodoForm from "../components/AddNewTodoForm"
-import { NewTodo } from "../types/Todo.types"
-import Button from 'react-bootstrap/Button'
-import { addDoc, doc, setDoc } from "firebase/firestore"
-import { todosCol } from "../servies/firebase"
-import useGetTodos from "../hooks/useGetTodos"
 import { toast } from 'react-toastify'
-
+import TodoForm from '../components/TodoForm'
+import useGetTodos from '../hooks/useGetTodos'
+import { newTodosCol } from '../services/firebase'
+import { TodoFormData } from "../types/Todo.types"
 
 const TodosPage = () => {
-	const { loading, data: todos, getData } = useGetTodos()
+	const {
+		data: todos,
+		loading
+	} = useGetTodos()
 
-	const addTodo = async (todo: NewTodo) => {
+	// Create a new todo in the API
+	const addTodo = async (data: TodoFormData) => {
+		// Add a new document with a generated ID
+		const docRef = doc(newTodosCol)
 
-		// adds a new doc with an auto generated ID
-		const docRef = doc(todosCol)
+		// Set the contents of the document
+		await setDoc(docRef, {
+			...data,
+			created_at: serverTimestamp(),
+			updated_at: serverTimestamp(),
+		})
 
-		// sets the content of the doc
-		// await setDoc(docRef, todo)
-
-		await addDoc(todosCol, todo)
-
-		// await addDoc(collection(db, "todos"), {
-		// 	title: todo.title,
-		// 	completed: false,
-		// 	created_at: serverTimestamp()
-		// })
-
-		toast.success("Created new todo")
-		
-		getData()
+		// 🥂
+		toast.success("Yay, even MORE stuff to do... 😁")
 	}
 
 	return (
 		<>
-			<div className="d-flex justify-content-between">
+			<div className="d-flex justify-content-between align-items-start">
 				<h1 className="mb-3">Todos</h1>
-				<div className='d-flex align-items-center'>
-					<Button 
-						variant='primary'
-						onClick={getData}
-					>Refresh</Button>
-				</div>
 			</div>
 
-			<AddNewTodoForm onAddTodo={addTodo} />
+			<TodoForm onSave={addTodo} />
 
 			{loading && <p>Loading todos...</p>}
 

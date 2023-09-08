@@ -1,39 +1,47 @@
-import { useEffect, useState } from "react"
-import { CollectionReference, doc, getDoc } from "firebase/firestore"
+import { CollectionReference, doc, getDoc } from 'firebase/firestore'
+import { useCallback, useEffect, useState } from 'react'
 
 const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) => {
-    const [data, setData] = useState<T|null>(null)
-    const [loading, setLoading] = useState(false)
-    const [_error, setError] = useState(false)
+	const [data, setData] = useState<T|null>(null)
+	const [error, setError] = useState(false)
+	const [loading, setLoading] = useState(true)
 
+	// Get todo
+	const getData = useCallback(async () => {
+		setError(false)
+		setLoading(true)
 
-        const getData = async () => {
-            setLoading(true)
-            const docRef = doc(colRef, documentId)
-			const docSnap = await getDoc(docRef)
+		// get reference to document in `todos` collection
+		const docRef = doc(colRef, documentId)
+		const docSnapshot = await getDoc(docRef)
 
-            if (!docSnap.exists()) {
-                setData(null)
-                setError(true)
-                setLoading(false)
-                return
-            }
-	
-			const data: T = {
-                ...docSnap.data(),
-                _id: docSnap.id
-            }
+		if (!docSnapshot.exists()) {
+			setData(null)
+			setError(true)
+			setLoading(false)
+			return
+		}
 
-			setData(data)
-            setLoading(false)
-        }
+		const data: T = {
+			...docSnapshot.data(),
+			_id: docSnapshot.id,
+		}
 
+		setData(data)
+		setLoading(false)
+	}, [colRef, documentId])
 
-        useEffect(() => {
-            getData()
-        }, [])
+	// Get data on component mount
+	useEffect(() => {
+		getData()
+	}, [getData])
 
-    return { loading, data, getData }
+	return {
+		data,
+		error,
+		getData,
+		loading,
+	}
 }
 
 export default useGetDocument

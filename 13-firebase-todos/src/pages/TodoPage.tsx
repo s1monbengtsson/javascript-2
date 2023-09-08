@@ -1,72 +1,65 @@
+import { doc, deleteDoc } from 'firebase/firestore'
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { toast } from 'react-toastify'
 import ConfirmationModal from "../components/ConfirmationModal"
 import useGetTodo from "../hooks/useGetTodo"
-import { doc, deleteDoc, updateDoc } from "firebase/firestore"
-import { db } from "../servies/firebase"
+import { todosCol } from '../services/firebase'
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+	const navigate = useNavigate()
 	const { id } = useParams()
 
 	const documentId = id as string
-	
-	const { data: todo, loading, getData: getTodo } = useGetTodo(documentId)
 
-	const navigate = useNavigate()
-
-	if (!todo) {
-		return
-	}
-
-	const timestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000
-	const createdAt = new Date(timestamp).toLocaleString()
-
-	const toggleTodo = async () => {
-
-		const todoRef = doc(db, "todos", documentId)
-
-		await updateDoc(todoRef, {
-			completed: !todo?.completed
-		})
-
-		getTodo()
-	}
+	const {
+		data: todo,
+		loading
+	} = useGetTodo(documentId)
 
 	const deleteTodo = async () => {
+		// Get a reference to the document
+		const docRef = doc(todosCol, documentId)
 
-		await deleteDoc(doc(db, "todos", documentId))
+		// Delete the document
+		await deleteDoc(docRef)
 
+		// 🥂
+		toast.success("💣 Todo deleted")
+
+		// Redirect user to todos list
+		// (and replace the current history entry for this page)
 		navigate('/todos', {
-			replace: true
+			replace: true,
 		})
+	}
+
+	if (loading || !todo) {
+		return <p>Loading todo...</p>
 	}
 
 	return (
 		<>
-			{loading && <p>Loading...</p>}
-			<h1>{todo.title}</h1>
+			<div className="d-flex justify-content-between align-items-start">
+				<h1>{todo.title}</h1>
+			</div>
 
 			<p>
 				<strong>Status:</strong>{" "}
 				{todo.completed ? "Completed" : "Not completed"}
 			</p>
 
-			<p>
-				<strong>Created At:</strong>{" "}
-				{createdAt}
-			</p>
-
 			<div className="buttons mb-3">
 				<Button
 					variant="success"
-					onClick={toggleTodo}
+					onClick={() => console.log("Would toggle todo")}
 				>
 					Toggle
 				</Button>
 
-				<Link to={`/todos/${todo._id}/edit`}>
+				<Link to={`/todos/${id}/edit`}>
 					<Button variant="warning">Edit</Button>
 				</Link>
 
