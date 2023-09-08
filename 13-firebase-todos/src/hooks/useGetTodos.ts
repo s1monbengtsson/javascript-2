@@ -4,7 +4,7 @@ import { Todo } from '../types/Todo.types'
 import useStreamCollection from './useStreamCollection'
 
 const useGetTodos = () => {
-	return useStreamCollection<Todo>(todosCol, orderBy('title'))
+	return useStreamCollection<Todo>(todosCol, orderBy('completed'), orderBy('title'))
 }
 
 export default useGetTodos

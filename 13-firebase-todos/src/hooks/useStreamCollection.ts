@@ -26,7 +26,7 @@ const useStreamCollection = <T>(colRef: CollectionReference<T>, ...queryContstra
 			setLoading(false)
 		})
 
-		// Return unsubscribe function as cleanup
+		// Return unsubscribe function as cleanup. Will unsubscribe when component is unmounted
 		return unsubscribe
 	}, [colRef])
 
