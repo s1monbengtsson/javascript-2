@@ -50,10 +50,16 @@ const TodoPage = () => {
 			replace: true,
 		})
 	}
-
+	
 	if (loading || !todo) {
 		return <p>Loading todo...</p>
 	}
+	
+		const createdAtTimestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000
+		const createdAt = new Date(createdAtTimestamp).toLocaleString()
+
+		const updatedAtTimestamp = (todo.updated_at.seconds+todo.updated_at.nanoseconds*10**-9)*1000
+		const updatedAt = new Date(updatedAtTimestamp).toLocaleString()
 
 	return (
 		<>
@@ -64,6 +70,16 @@ const TodoPage = () => {
 			<p>
 				<strong>Status:</strong>{" "}
 				{todo.completed ? "Completed" : "Not completed"}
+			</p>
+
+			<p className='mb-0'>
+				<strong>Created At:</strong>{" "}
+				{createdAt}
+			</p>
+
+			<p>
+				<strong>Updated At:</strong>{" "}
+				{updatedAt}
 			</p>
 
 			<div className="buttons mb-3">

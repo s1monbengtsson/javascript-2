@@ -6,6 +6,7 @@ import TodoForm from '../components/TodoForm'
 import useGetTodos from '../hooks/useGetTodos'
 import { newTodosCol } from '../services/firebase'
 import { TodoFormData } from "../types/Todo.types"
+import { firebaseTimestamptoIsoLocal } from '../components/time'
 
 const TodosPage = () => {
 	const {
@@ -46,10 +47,11 @@ const TodosPage = () => {
 							action
 							as={Link}
 							key={todo._id}
-							className={todo.completed ? "done" : ""}
+							className={todo.completed ? "done d-flex justify-content-between align-items-center" : "d-flex justify-content-between align-items-center"}
 							to={`/todos/${todo._id}`}
 						>
 							{todo.title}
+							<span className='text-muted' style={{fontSize: '13px'}}>{firebaseTimestamptoIsoLocal(todo.created_at)}</span>
 						</ListGroup.Item>
 					))}
 				</ListGroup>
