@@ -1,10 +1,10 @@
-import { UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { User, UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { createContext, useState } from 'react'
 import { auth } from '../services/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 
 type AuthContextType = {
-	currentUser: UserCredential | null
+	currentUser: User | null
 	login: (email: string, password: string) => Promise<UserCredential>
 	logout: () => void
 	signup: (email: string, password: string) => Promise<UserCredential>
@@ -20,7 +20,7 @@ type AuthContextProps = {
 }
 
 const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
-	const [currentUser, setCurrentUser] = useState(null)
+	const [currentUser, setCurrentUser] = useState<User|null>(null)
 	const [userEmail, setUserEmail] = useState<string | null>(null)
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -41,6 +41,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             console.log("user is signed in:", user.email)
+			setCurrentUser(user)
             setUserEmail(user.email)
 			setIsLoggedIn(true)
         } else {
@@ -49,6 +50,8 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			setIsLoggedIn(false)
         }
     })
+
+	console.log("Logged in as:", currentUser)
 
 	return (
 		<AuthContext.Provider value={{
