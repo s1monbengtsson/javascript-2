@@ -1,39 +1,67 @@
+import { UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { createContext, useState } from 'react'
-import { UserCredential, createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../services/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
 
 type AuthContextType = {
-    signup: (email: string, password: string) => Promise<UserCredential>
-    userEmail: string | null
+	currentUser: UserCredential | null
+	login: (email: string, password: string) => Promise<UserCredential>
+	logout: () => void
+	signup: (email: string, password: string) => Promise<UserCredential>
+	userEmail: string | null
+	isLoggedIn: boolean
 }
 
-export const AuthContext = createContext<AuthContextType|null>(null)
+// This creates the actual context and sets the context's initial/default value
+export const AuthContext = createContext<AuthContextType | null>(null)
 
-type Props = {
-    children: React.ReactNode
+type AuthContextProps = {
+	children: React.ReactNode
 }
 
-const AuthContextProvider: React.FC<Props> = ({ children }) => {
+const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
+	const [currentUser, setCurrentUser] = useState(null)
+	const [userEmail, setUserEmail] = useState<string | null>(null)
+	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-    const [userEmail, _setUserEmail] = useState<string|null>(null)
+	const login = (email: string, password: string) => {
+        return signInWithEmailAndPassword(auth, email, password)
+	}
 
-    const signup = async (email: string, password: string) => {
-        console.log("would sign up user from AuthContext", email, password)
+	const logout = () => {
+        return signOut(auth)
+	}
 
-        // sign up user in Firebase Authentication
-        const userCredentials = createUserWithEmailAndPassword(auth, email, password)
+	const signup = (email: string, password: string) => {
+        return createUserWithEmailAndPassword(auth, email, password)
 
-        return userCredentials
     }
+    
+	// add auth-state observer here (somehow... 😈)
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("user is signed in:", user.email)
+            setUserEmail(user.email)
+			setIsLoggedIn(true)
+        } else {
+            console.log("user is signed out:")
+            setUserEmail(null)
+			setIsLoggedIn(false)
+        }
+    })
 
-    return (
-        <AuthContext.Provider value={{
-            signup,
-            userEmail
-        }}>
-            {children}
-        </AuthContext.Provider>
-    )
+	return (
+		<AuthContext.Provider value={{
+			currentUser,
+			login,
+			logout,
+			signup,
+			userEmail,
+			isLoggedIn
+		}}>
+			{children}
+		</AuthContext.Provider>
+	)
 }
 
 export default AuthContextProvider

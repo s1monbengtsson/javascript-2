@@ -4,13 +4,16 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { SignUpCredentials } from '../types/User.types'
 import { useRef } from 'react'
 import useAuth from '../hooks/useAuth'
+import { toast } from 'react-toastify'
 
 
 const SignupPage = () => {
+
+    const navigate = useNavigate()
 
     const { handleSubmit, register, watch, formState: { errors } } = useForm<SignUpCredentials>()
 
@@ -21,10 +24,23 @@ const SignupPage = () => {
     passwordRef.current = watch('password')
 
     const onSignup: SubmitHandler<SignUpCredentials> = async (data) => {
-        console.log("would sign up user", data)
+        try {
+            // pass email and password along to signup in auth context
+            await signup(data.email, data.password)
+            toast.success("Successfully signed in")
+            setTimeout(() => {
+                navigate('/')
+            }, 1000)
 
-        // pass email and password along to signup in auth context
-        signup(data.email, data.password)
+        } catch (err: any) {
+            if (err.code === 'auth/email-already-in-use') {
+                toast.error("Email already in use. Please try another email.")
+            } else {
+                toast.error(`${err.code}`)
+            }
+        }
+
+
     }
 
 
@@ -36,7 +52,7 @@ const SignupPage = () => {
                     <Card.Body>
                         <Card.Title className='mb-3'>Sign Up</Card.Title>
 
-                        <Form onSubmit={handleSubmit(onSignup)}>
+                        <Form onSubmit={handleSubmit(onSignup)} noValidate>
                             <Form.Group controlId='email' className='mb-3'>
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control

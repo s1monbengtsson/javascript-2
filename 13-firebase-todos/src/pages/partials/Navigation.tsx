@@ -2,8 +2,11 @@ import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { NavLink, Link } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 
 const Navigation = () => {
+
+	const { logout } = useAuth()
 	return (
 		<Navbar bg="dark" variant="dark" expand="sm">
 			<Container>
@@ -15,6 +18,7 @@ const Navigation = () => {
 						<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
 						<Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
 						<Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
+						<Nav.Link as={NavLink} end to="/login" onClick={logout}>Sign Out</Nav.Link>
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

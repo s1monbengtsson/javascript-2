@@ -4,16 +4,32 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LoginCredentials } from '../types/User.types'
+import useAuth from '../hooks/useAuth'
+import { toast } from 'react-toastify'
 
 
 const LoginPage = () => {
 
+    const navigate = useNavigate()
+
     const { handleSubmit, register, formState: { errors } } = useForm<LoginCredentials>()
 
+    const { login } = useAuth()
+
     const onLogin: SubmitHandler<LoginCredentials> = async (data) => {
-        console.log("would login user", data)
+        try {
+            // login user
+            await login(data.email, data.password)
+            toast.success("Successfully signed in")
+            setTimeout(() => {
+                navigate('/')
+            }, 1000)
+        } catch (err: any) {
+            toast.error(`${err.code}`)
+        }
+
     }
 
 
@@ -23,7 +39,7 @@ const LoginPage = () => {
                 <Card>
 
                     <Card.Body>
-                        <Card.Title className='mb-3'>Sign Up</Card.Title>
+                        <Card.Title className='mb-3'>Login</Card.Title>
 
                         <Form onSubmit={handleSubmit(onLogin)}>
                             <Form.Group controlId='email' className='mb-3'>

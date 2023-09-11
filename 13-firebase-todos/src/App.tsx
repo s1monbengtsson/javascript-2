@@ -10,8 +10,11 @@ import TodosPage from './pages/TodosPage'
 import './assets/scss/App.scss'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
+import useAuth from './hooks/useAuth'
 
 const App = () => {
+	const { isLoggedIn } = useAuth()
+
 	return (
 		<div id="App">
 			<Navigation />
@@ -24,16 +27,20 @@ const App = () => {
 
 					<Route path='/login' element={<LoginPage />} />
 
-					<Route path="/todos">
-						{/* /todos */}
-						<Route path="" element={<TodosPage />} />
+					
 
-						{/* /todos/:id */}
-						<Route path=":id" element={<TodoPage />} />
+					{isLoggedIn && (
+						<Route path="/todos">
+							{/* /todos */}
+							<Route path="" element={<TodosPage />} />
 
-						{/* /todos/:id/edit */}
-						<Route path=":id/edit" element={<EditTodoPage />} />
-					</Route>
+							{/* /todos/:id */}
+							<Route path=":id" element={<TodoPage />} />
+
+							{/* /todos/:id/edit */}
+							<Route path=":id/edit" element={<EditTodoPage />} />
+						</Route>
+					)}
 
 					<Route path="*" element={<NotFound />} />
 				</Routes>
@@ -41,6 +48,7 @@ const App = () => {
 
 			<ToastContainer
 				theme='colored'
+				autoClose={1500}
 			/>
 		</div>
 	)
