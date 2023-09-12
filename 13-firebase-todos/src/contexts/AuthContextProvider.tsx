@@ -45,7 +45,6 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 	// add auth-state observer here (somehow... 😈)
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			console.log("Auth state changed:", user)
 			setCurrentUser(user)
 
 			if (user) {
@@ -60,8 +59,6 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
 		return unsubscribe
 	}, [])
-
-	console.log("currentUser:", currentUser)
 
 	return (
 		<AuthContext.Provider value={{

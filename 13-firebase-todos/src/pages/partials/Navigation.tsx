@@ -6,7 +6,7 @@ import useAuth from '../../hooks/useAuth'
 
 const Navigation = () => {
 
-	const { userEmail } = useAuth()
+	const { currentUser } = useAuth()
 
 	return (
 		<Navbar bg="dark" variant="dark" expand="sm">
@@ -16,11 +16,23 @@ const Navigation = () => {
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="ms-auto">
-						<Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
-						<Nav.Link as={NavLink} end to="/logout">Logout</Nav.Link>
-						<Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
-						<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
-						<Nav.Link>{userEmail}</Nav.Link>
+						{/* Options for logged out user */}
+						{!currentUser && (
+							<>
+								<Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
+								<Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
+							</>
+						)}
+						
+						{/* Options for logged in user */}
+						{currentUser && (
+							<>
+								<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
+								<Nav.Link as={NavLink} end to="/logout">Logout</Nav.Link>
+							</>
+						)}
+								
+						<Nav.Link>{currentUser?.email}</Nav.Link>
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

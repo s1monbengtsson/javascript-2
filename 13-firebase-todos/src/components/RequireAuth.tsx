@@ -4,15 +4,16 @@ import useAuth from '../hooks/useAuth'
 
 type IRequireAuthProps = {
     children: React.ReactNode
+    redirectTo?: string
 }
 
-const RequireAuth: React.FC<IRequireAuthProps> = ({ children }) => {
+const RequireAuth: React.FC<IRequireAuthProps> = ({ children, redirectTo = '/login' }) => {
     const { currentUser } = useAuth()
 
     return (
         currentUser
             ?   <>{children}</>
-            :   <Navigate to='/login' />
+            :   <Navigate to={redirectTo} />
     )
 }
 

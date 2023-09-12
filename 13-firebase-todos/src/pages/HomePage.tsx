@@ -8,15 +8,14 @@ const HomePage = () => {
 
 	const { currentUser } = useAuth()
 
+	if (!currentUser) {
+		throw new Error("You are not entitled to be here!")
+	}
+
 	return (
 		<Container className="mt-3">
 			<h1>Firebase Todos</h1>
-			{/* {userEmail && <h2>Welcome {userEmail}</h2>} */}
-
-			{currentUser 
-				? <p>You are logged in as {currentUser.email}</p>
-				: <p>You are logged in as anonymous</p>
-			}
+			<p>You are logged in as {currentUser!.email}({currentUser?.uid})</p>
 
 			<ButtonGroup>
 				<Button
