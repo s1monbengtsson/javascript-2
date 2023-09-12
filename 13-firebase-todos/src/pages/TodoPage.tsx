@@ -7,6 +7,7 @@ import ConfirmationModal from "../components/ConfirmationModal"
 import useGetTodo from "../hooks/useGetTodo"
 import { todosCol } from '../services/firebase'
 import { TodoFormData } from '../types/Todo.types'
+import { Container } from 'react-bootstrap'
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
@@ -62,7 +63,7 @@ const TodoPage = () => {
 		const updatedAt = new Date(updatedAtTimestamp).toLocaleString()
 
 	return (
-		<>
+		<Container className='mt-3'>
 			<div className="d-flex justify-content-between align-items-start">
 				<h1>{todo.title}</h1>
 			</div>
@@ -113,7 +114,7 @@ const TodoPage = () => {
 			<Link to="/todos">
 				<Button variant="secondary">&laquo; All todos</Button>
 			</Link>
-		</>
+		</Container>
 	)
 }
 

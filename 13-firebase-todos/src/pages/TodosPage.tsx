@@ -7,6 +7,7 @@ import useGetTodos from '../hooks/useGetTodos'
 import { newTodosCol } from '../services/firebase'
 import { TodoFormData } from "../types/Todo.types"
 import { firebaseTimestamptoIsoLocal } from '../components/helpers/time'
+import Container from 'react-bootstrap/Container'
 
 const TodosPage = () => {
 	const {
@@ -31,7 +32,7 @@ const TodosPage = () => {
 	}
 
 	return (
-		<>
+		<Container className='mt-3'>
 			<div className="d-flex justify-content-between align-items-start">
 				<h1 className="mb-3">Todos</h1>
 			</div>
@@ -60,7 +61,7 @@ const TodosPage = () => {
 			{todos && todos.length === 0 && (
 				<p>Yayyy, you have 0 todos to do</p>
 			)}
-		</>
+		</Container>
 	)
 }
 

@@ -6,6 +6,7 @@ import useGetTodo from '../hooks/useGetTodo'
 import { todosCol } from '../services/firebase'
 import TodoForm from '../components/TodoForm'
 import { TodoFormData } from '../types/Todo.types'
+import { Container } from 'react-bootstrap'
 
 const EditTodoPage = () => {
 	const navigate = useNavigate()
@@ -38,13 +39,13 @@ const EditTodoPage = () => {
 	}
 
 	return (
-		<>
+		<Container className='mt-3'>
 			<h1>Edit: {todo.title}</h1>
 
 			<TodoForm onSave={updateTodo} initialValues={todo} />
 
 			<Button variant='secondary' onClick={() => navigate(-1)}>&laquo; Go back</Button>
-		</>
+		</Container>
 	)
 }
 

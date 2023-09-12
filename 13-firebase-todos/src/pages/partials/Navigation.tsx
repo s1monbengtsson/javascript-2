@@ -9,7 +9,7 @@ const Navigation = () => {
 	const { userEmail } = useAuth()
 
 	return (
-		<Navbar bg="dark" variant="dark" expand="sm">
+		<Navbar bg="dark" variant="dark" expand="sm" style={{width: '100%', marginLeft: '0'}}>
 			<Container>
 				<Navbar.Brand as={Link} to="/">🔥 Firebase Todos</Navbar.Brand>
 
