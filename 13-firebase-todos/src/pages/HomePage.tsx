@@ -5,11 +5,17 @@ import useAuth from "../hooks/useAuth"
 
 const HomePage = () => {
 
-	const { userEmail } = useAuth()
+	const { currentUser } = useAuth()
+
 	return (
-		<>
+		<div className="w-75 mx-auto">
 			<h1>Firebase Todos</h1>
-			{userEmail && <h2>Welcome {userEmail}</h2>}
+			{/* {userEmail && <h2>Welcome {userEmail}</h2>} */}
+
+			{currentUser 
+				? <p>You are logged in as {currentUser.email}</p>
+				: <p>You are logged in as anonymous</p>
+			}
 
 			<ButtonGroup>
 				<Button
@@ -24,7 +30,7 @@ const HomePage = () => {
 					HYPE ME 🔥
 				</Button>
 			</ButtonGroup>
-		</>
+		</div>
 	)
 }
 

@@ -8,34 +8,37 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LoginCredentials } from '../types/User.types'
 import useAuth from '../hooks/useAuth'
 import { toast } from 'react-toastify'
-
+import { FirebaseError } from 'firebase/app'
+import { useState } from 'react'
 
 const LoginPage = () => {
-
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
-
     const { handleSubmit, register, formState: { errors } } = useForm<LoginCredentials>()
-
     const { login } = useAuth()
 
     const onLogin: SubmitHandler<LoginCredentials> = async (data) => {
         try {
+            setIsLoading(true)
             // login user
             await login(data.email, data.password)
-            toast.success("Successfully signed in")
+            toast.success("Successfully signed in as " + data.email)
             setTimeout(() => {
                 navigate('/')
             }, 1000)
-        } catch (err: any) {
-            toast.error(`${err.code}`)
+        } catch (err) {
+            if (err instanceof FirebaseError) {
+                toast.error(`${err.message}`)
+            } else {
+                toast.error("Something went wrong. Please try again!")
+            }
+            setIsLoading(false)
         }
-
     }
-
 
     return (
         <Row>
-            <Col md={{ span:6, offset: 3 }}>
+            <Col md={{ span: 6, offset: 3 }}>
                 <Card>
 
                     <Card.Body>
@@ -61,18 +64,20 @@ const LoginPage = () => {
                                     type='password'
                                     {...register('password', {
                                         required: "You're kidding, right? Enter a password...",
-                                        minLength: {
-                                            value: 3,
-                                            message: "Please enter at least 3 characters"
-                                        }
                                     })}
                                 />
                                 {errors.password && <p  className='invalid'>{errors.password.message ?? "Invalid password"}</p>}
-                                <Form.Text>Password must be at least 6 characters long</Form.Text>
                             </Form.Group>
 
 
-                            <Button variant='primary' type='submit'>Login</Button>
+                            <Button 
+                                variant='primary' 
+                                type='submit' 
+                                disabled={isLoading}
+                                >{isLoading 
+                                    ? "Signing in..." 
+                                    : "Sign in"}
+                            </Button>
                         </Form>
 
                         <div className="text-center">

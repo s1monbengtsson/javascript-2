@@ -6,17 +6,16 @@ import Row from 'react-bootstrap/Row'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { SignUpCredentials } from '../types/User.types'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { toast } from 'react-toastify'
-
+import { FirebaseError } from 'firebase/app'
 
 const SignupPage = () => {
-
+    const [errorMessage, setErrorMessage] = useState<string|null>(null)
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
-
     const { handleSubmit, register, watch, formState: { errors } } = useForm<SignUpCredentials>()
-
     const { signup } = useAuth()
 
     // watch the current value of `passform` form field
@@ -24,25 +23,29 @@ const SignupPage = () => {
     passwordRef.current = watch('password')
 
     const onSignup: SubmitHandler<SignUpCredentials> = async (data) => {
+        // Clear any previous state
+        setErrorMessage(null)
+
         try {
+            setIsLoading(true)
             // pass email and password along to signup in auth context
             await signup(data.email, data.password)
-            toast.success("Successfully signed in")
+            toast.success("Successfully signed in as " + data.email)
             setTimeout(() => {
                 navigate('/')
             }, 1000)
 
-        } catch (err: any) {
-            if (err.code === 'auth/email-already-in-use') {
-                toast.error("Email already in use. Please try another email.")
+        } catch (err) {
+            if (err instanceof FirebaseError) {
+                setErrorMessage(err.message)
+                toast.error(errorMessage)
             } else {
-                toast.error(`${err.code}`)
+                setErrorMessage("Something went wrong. Please try again!")
+                toast.error("Something went wrong. Please try again!")
             }
+            setIsLoading(false)
         }
-
-
     }
-
 
     return (
         <Row>
@@ -52,7 +55,9 @@ const SignupPage = () => {
                     <Card.Body>
                         <Card.Title className='mb-3'>Sign Up</Card.Title>
 
-                        <Form onSubmit={handleSubmit(onSignup)} noValidate>
+                        {/* {errorMessage && <Alert variant='danger'>{errorMessage}</Alert>} */}
+
+                        <Form onSubmit={handleSubmit(onSignup)}>
                             <Form.Group controlId='email' className='mb-3'>
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control
@@ -91,7 +96,7 @@ const SignupPage = () => {
                                         required: "Enter your password again...",
                                         minLength: {
                                             value: 6,
-                                            message: "Please enter at least 3 characters"
+                                            message: "Please enter at least 6 characters"
                                         },
                                         validate: (value) => {
                                             return value === passwordRef.current || "The passwords does not match"
@@ -101,7 +106,14 @@ const SignupPage = () => {
                                 {errors.passwordConfirm && <p  className='invalid'>{errors.passwordConfirm.message ?? "Invalid value"}</p>}
                             </Form.Group>
 
-                            <Button variant='primary' type='submit'>Create Account</Button>
+                            <Button 
+                                variant='primary' 
+                                type='submit' 
+                                disabled={isLoading}
+                                >{isLoading 
+                                    ? "Creating Account..." 
+                                    : "Create Account"}
+                            </Button>
                         </Form>
 
                         {/* <div className="text-center">

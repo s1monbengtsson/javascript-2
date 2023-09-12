@@ -1,15 +1,21 @@
-import { User, UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { createContext, useState } from 'react'
+import {
+	UserCredential,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+	onAuthStateChanged,
+	User,
+	signOut,
+} from 'firebase/auth'
+import { createContext, useEffect, useState } from 'react'
+import SyncLoader from 'react-spinners/SyncLoader'
 import { auth } from '../services/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
 
 type AuthContextType = {
 	currentUser: User | null
 	login: (email: string, password: string) => Promise<UserCredential>
-	logout: () => void
+	logout: () => Promise<void>
 	signup: (email: string, password: string) => Promise<UserCredential>
 	userEmail: string | null
-	isLoggedIn: boolean
 }
 
 // This creates the actual context and sets the context's initial/default value
@@ -20,38 +26,42 @@ type AuthContextProps = {
 }
 
 const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
-	const [currentUser, setCurrentUser] = useState<User|null>(null)
+	const [currentUser, setCurrentUser] = useState<User | null>(null)
+	const [loading, setLoading] = useState(true)
 	const [userEmail, setUserEmail] = useState<string | null>(null)
-	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 	const login = (email: string, password: string) => {
-        return signInWithEmailAndPassword(auth, email, password)
+		return signInWithEmailAndPassword(auth, email, password)
 	}
 
 	const logout = () => {
-        return signOut(auth)
+		return signOut(auth)
 	}
 
 	const signup = (email: string, password: string) => {
-        return createUserWithEmailAndPassword(auth, email, password)
+		return createUserWithEmailAndPassword(auth, email, password)
+	}
 
-    }
-    
 	// add auth-state observer here (somehow... 😈)
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("user is signed in:", user.email)
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			console.log("Auth state changed:", user)
 			setCurrentUser(user)
-            setUserEmail(user.email)
-			setIsLoggedIn(true)
-        } else {
-            console.log("user is signed out:")
-            setUserEmail(null)
-			setIsLoggedIn(false)
-        }
-    })
 
-	console.log("Logged in as:", currentUser)
+			if (user) {
+				// User is logged in
+				setUserEmail(user.email)
+			} else {
+				// No user is logged in
+				setUserEmail(null)
+			}
+			setLoading(false)
+		})
+
+		return unsubscribe
+	}, [])
+
+	console.log("currentUser:", currentUser)
 
 	return (
 		<AuthContext.Provider value={{
@@ -60,9 +70,14 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			logout,
 			signup,
 			userEmail,
-			isLoggedIn
 		}}>
-			{children}
+			{loading ? (
+				<div id="initial-loader">
+					<SyncLoader color={'#888'} size={15} speedMultiplier={1.1} />
+				</div>
+			) : (
+				<>{children}</>
+			)}
 		</AuthContext.Provider>
 	)
 }
