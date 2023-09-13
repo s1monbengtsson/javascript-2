@@ -1,23 +1,21 @@
-import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import ListGroup from "react-bootstrap/ListGroup"
 import { Link } from "react-router-dom"
 import { toast } from 'react-toastify'
 import TodoForm from '../components/TodoForm'
 import useGetTodos from '../hooks/useGetTodos'
-import { db, newTodosCol } from '../services/firebase'
-import { Todo, TodoFormData, Todos } from "../types/Todo.types"
+import { newTodosCol } from '../services/firebase'
+import { TodoFormData } from "../types/Todo.types"
 import { firebaseTimestamptoIsoLocal } from '../components/helpers/time'
 import Container from 'react-bootstrap/Container'
 import useAuth from '../hooks/useAuth'
-import { useEffect, useState } from 'react'
+
 
 const TodosPage = () => {
 	const {
 		data: todos,
 		loading
 	} = useGetTodos()
-
-	const [usersTodos, setUsersTodos] = useState<Todos>()
 
 	const { currentUser } = useAuth()
 
