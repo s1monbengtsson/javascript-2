@@ -15,7 +15,15 @@ type AuthContextType = {
 	login: (email: string, password: string) => Promise<UserCredential>
 	logout: () => Promise<void>
 	signup: (email: string, password: string) => Promise<UserCredential>
+	// reloadUser: ?
+	// resetPassword: ?
+	// setEmail: ?
+	// setDisplayName: ?
+	// setPassword: ?
+	// setPhotoUrl: ?
 	userEmail: string | null
+	userName: string | null
+	userPhotoUrl: string | null
 }
 
 // This creates the actual context and sets the context's initial/default value
@@ -29,6 +37,8 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState<User | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [userEmail, setUserEmail] = useState<string | null>(null)
+	const [userName, setUserName] = useState<string | null>(null)
+	const [userPhotoUrl, setUserPhotoUrl] = useState<string | null>(null)
 
 	const login = (email: string, password: string) => {
 		return signInWithEmailAndPassword(auth, email, password)
@@ -40,6 +50,24 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
 	const signup = (email: string, password: string) => {
 		return createUserWithEmailAndPassword(auth, email, password)
+	}
+
+	const reloadUser = async () => {
+	}
+
+	const resetPassword = (email: string) => {
+	}
+
+	const setEmail = (email: string) => {
+	}
+
+	const setPassword = (password: string) => {
+	}
+
+	const setDisplayName = (name: string) => {
+	}
+
+	const setPhotoUrl = (name: string) => {
 	}
 
 	// add auth-state observer here (somehow... 😈)
@@ -67,6 +95,8 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			logout,
 			signup,
 			userEmail,
+			userName,
+			userPhotoUrl,
 		}}>
 			{loading ? (
 				<div id="initial-loader">

@@ -11,6 +11,8 @@ import TodoPage from './pages/TodoPage'
 import TodosPage from './pages/TodosPage'
 import './assets/scss/App.scss'
 import RequireAuth from './components/RequireAuth'
+import UpdateProfilePage from './pages/UpdateProfilePage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 const App = () => {
 	return (
@@ -24,6 +26,7 @@ const App = () => {
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/logout" element={<LogoutPage />} />
 				<Route path="/signup" element={<SignupPage />} />
+				<Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
 				{/* Protected routes */}
 
@@ -55,6 +58,11 @@ const App = () => {
 						</RequireAuth>} 
 					/>
 				</Route>
+				<Route path="/update-profile" element={
+					<RequireAuth>
+						<UpdateProfilePage />
+					</RequireAuth>} 
+				/>
 			</Routes>
 
 			<ToastContainer

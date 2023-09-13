@@ -3,10 +3,12 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { NavLink, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
+import { NavDropdown } from 'react-bootstrap'
+import RequireAuth from '../../components/RequireAuth'
 
 const Navigation = () => {
 
-	const { currentUser } = useAuth()
+	const { currentUser, userEmail } = useAuth()
 
 	return (
 		<Navbar bg="dark" variant="dark" expand="sm">
@@ -16,23 +18,24 @@ const Navigation = () => {
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="ms-auto">
-						{/* Options for logged out user */}
-						{!currentUser && (
+						{/* Options  */}
+						{!currentUser ? 
 							<>
 								<Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
 								<Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
 							</>
-						)}
-						
-						{/* Options for logged in user */}
-						{currentUser && (
+							:	
 							<>
 								<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
-								<Nav.Link as={NavLink} end to="/logout">Logout</Nav.Link>
+								<NavDropdown title={userEmail}>
+								<RequireAuth>
+									<NavDropdown.Item as={NavLink} to='/update-profile'>Update Profile</NavDropdown.Item>
+								</RequireAuth>
+									<NavDropdown.Divider />
+									<NavDropdown.Item as={NavLink} to='/logout'>Logout</NavDropdown.Item>
+								</NavDropdown>
 							</>
-						)}
-								
-						<Nav.Link>{currentUser?.email}</Nav.Link>
+						}
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

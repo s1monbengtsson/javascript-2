@@ -10,3 +10,9 @@ export type SignUpCredentials = {
     passwordConfirm: string
 }
 
+export type ResetPassword = Omit<LoginCredentials, "password">
+
+export type UpdateProfileFormData = {
+	
+}
+
