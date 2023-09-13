@@ -10,14 +10,14 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 import { ResetPassword } from "../types/User.types"
-import { sendPasswordResetEmail } from "firebase/auth"
-import { auth } from "../services/firebase"
+import useAuth from "../hooks/useAuth"
 
 const ForgotPasswordPage = () => {
     const [errorMessage, setErrorMessage] = useState<string|null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
     const { handleSubmit, register } = useForm<ResetPassword>()
+    const { resetPassword } = useAuth()
 
     const onPasswordReset: SubmitHandler<ResetPassword> = async (data) => {
         // Clear any previous state
@@ -26,7 +26,7 @@ const ForgotPasswordPage = () => {
         try {
             setIsLoading(true)
             // pass email to get a password reset link sent to provided email
-            sendPasswordResetEmail(auth, data.email)
+            await resetPassword(data.email)
 
             // send a toast with confirmation message
             toast.success("Password reset link has been sent to your email.")

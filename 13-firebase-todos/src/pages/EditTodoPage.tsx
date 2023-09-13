@@ -6,13 +6,15 @@ import useGetTodo from '../hooks/useGetTodo'
 import { todosCol } from '../services/firebase'
 import TodoForm from '../components/TodoForm'
 import { TodoFormData } from '../types/Todo.types'
-import { Container } from 'react-bootstrap'
+import { Alert, Container } from 'react-bootstrap'
+import useAuth from '../hooks/useAuth'
 
 const EditTodoPage = () => {
 	const navigate = useNavigate()
 	const { id } = useParams()
 
 	const documentId = id as string
+	const { currentUser } = useAuth()
 
 	const {
 		data: todo,
@@ -36,6 +38,10 @@ const EditTodoPage = () => {
 			success: "🤩 Todo was saved successfully",
 			error: "😬 Unable to save todo"
 		})
+	}
+
+	if (todo.user !== currentUser?.uid) {
+		return <Alert variant='danger' className='text-center'>You do not own the rights for this todo!</Alert>
 	}
 
 	return (

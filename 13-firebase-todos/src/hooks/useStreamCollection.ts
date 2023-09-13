@@ -1,15 +1,18 @@
-import { CollectionReference, QueryConstraint, onSnapshot, query } from 'firebase/firestore'
+import { CollectionReference, QueryConstraint, onSnapshot, query, where } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
+import useAuth from './useAuth'
 
 const useStreamCollection = <T>(colRef: CollectionReference<T>, ...queryContstraints: QueryConstraint[]) => {
 
 	const [data, setData] = useState<T[]|null>(null)
 	const [loading, setLoading] = useState(true)
 
+	const { currentUser } = useAuth()
+
 	// Get data on component mount
 	useEffect(() => {
 		//Construct a query reference
-		const queryRef = query(colRef, ...queryContstraints)
+		const queryRef = query(colRef, where("user", "==", currentUser!.uid), ...queryContstraints)
 
 		// Subscribe to changes in the collection
 		const unsubscribe = onSnapshot(queryRef, (snapshot) => {

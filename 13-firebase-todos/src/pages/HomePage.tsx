@@ -12,6 +12,9 @@ const HomePage = () => {
 		throw new Error("You are not entitled to be here!")
 	}
 
+	console.log("display name:", currentUser.displayName)
+	console.log("email:", currentUser.email)
+
 	return (
 		<Container className="mt-3">
 			<h1>Firebase Todos</h1>

@@ -5,6 +5,10 @@ import {
 	onAuthStateChanged,
 	User,
 	signOut,
+	updateProfile,
+	updateEmail,
+	updatePassword,
+	sendPasswordResetEmail,
 } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
@@ -16,11 +20,11 @@ type AuthContextType = {
 	logout: () => Promise<void>
 	signup: (email: string, password: string) => Promise<UserCredential>
 	// reloadUser: ?
-	// resetPassword: ?
-	// setEmail: ?
-	// setDisplayName: ?
-	// setPassword: ?
-	// setPhotoUrl: ?
+	resetPassword: (email: string) => Promise<void> 
+	setEmail: (email: string) => Promise<void>
+	setDisplayName: (name: string) => Promise<void>
+	setPassword: (password: string) => Promise<void>
+	setPhotoUrl: (photoURL: string) => Promise<void>
 	userEmail: string | null
 	userName: string | null
 	userPhotoUrl: string | null
@@ -52,22 +56,34 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 		return createUserWithEmailAndPassword(auth, email, password)
 	}
 
-	const reloadUser = async () => {
-	}
+	// const reloadUser = async () => {
+	// }
 
 	const resetPassword = (email: string) => {
+		return sendPasswordResetEmail(auth, email)
 	}
 
 	const setEmail = (email: string) => {
+		setUserEmail(email)
+		return updateEmail(auth.currentUser!, email)
 	}
 
 	const setPassword = (password: string) => {
+		return updatePassword(auth.currentUser!, password)
 	}
 
 	const setDisplayName = (name: string) => {
+		setUserName(name)
+		return updateProfile(auth.currentUser!, {
+			displayName: name
+		})
 	}
 
-	const setPhotoUrl = (name: string) => {
+	const setPhotoUrl = (photoURL: string) => {
+		setUserPhotoUrl(photoURL)
+		return updateProfile(auth.currentUser!, {
+			photoURL
+		})
 	}
 
 	// add auth-state observer here (somehow... 😈)
@@ -94,6 +110,11 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			login,
 			logout,
 			signup,
+			resetPassword,
+			setPassword,
+			setDisplayName,
+			setEmail,
+			setPhotoUrl,
 			userEmail,
 			userName,
 			userPhotoUrl,

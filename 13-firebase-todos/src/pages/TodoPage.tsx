@@ -7,12 +7,15 @@ import ConfirmationModal from "../components/ConfirmationModal"
 import useGetTodo from "../hooks/useGetTodo"
 import { todosCol } from '../services/firebase'
 import { TodoFormData } from '../types/Todo.types'
-import { Container } from 'react-bootstrap'
+import { Alert, Container } from 'react-bootstrap'
+import useAuth from '../hooks/useAuth'
 
 const TodoPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
 	const navigate = useNavigate()
 	const { id } = useParams()
+
+	const { currentUser } = useAuth()
 
 	const documentId = id as string
 
@@ -54,6 +57,10 @@ const TodoPage = () => {
 	
 	if (loading || !todo) {
 		return <p>Loading todo...</p>
+	}
+
+	if (todo.user !== currentUser?.uid) {
+		return <Alert variant='danger' className='text-center'>You do not own the rights for this todo!</Alert>
 	}
 	
 		const createdAtTimestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000

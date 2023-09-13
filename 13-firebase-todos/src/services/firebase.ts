@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app"
-import { CollectionReference, collection, DocumentData, getFirestore } from "firebase/firestore"
+import { CollectionReference, collection, DocumentData, getFirestore, where } from "firebase/firestore"
 import { NewTodo, Todo } from "../types/Todo.types"
 import { getAuth } from "firebase/auth"
+import useAuth from "../hooks/useAuth"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,6 +27,7 @@ export const db = getFirestore(app)
 // This is just a helper to add the type to the db responses
 const createCollection = <T = DocumentData>(collectionName: string) => {
 	return collection(db, collectionName) as CollectionReference<T>
+	// (collection(db, "todos"), where("user", "==", uid))
 }
 
 // Export collection references

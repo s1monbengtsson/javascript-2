@@ -13,6 +13,9 @@ export type SignUpCredentials = {
 export type ResetPassword = Omit<LoginCredentials, "password">
 
 export type UpdateProfileFormData = {
-	
+	email?: string
+    displayName?: string
+    photoURL?: string
+    password?: string
 }
 
