@@ -27,18 +27,18 @@ const Navigation = () => {
 							:	
 							<>
 								<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
-								<NavDropdown 
-									title={
-										userPhotoUrl 
-										? <Image 
-											src={userPhotoUrl} 
-											style={{height: '30px'}}
-											rounded
-											fluid
-										/> 
-										: userName || userEmail
-									}
-								>
+								<NavDropdown
+								title={
+									userPhotoUrl
+									? <Image
+										src={userPhotoUrl}
+										height={30}
+										width={30}
+										title={(userName || userEmail) ?? ""}
+										roundedCircle />
+									: userName || userEmail
+								}
+							>
 								<RequireAuth>
 									<NavDropdown.Item as={NavLink} to='/update-profile'>Update Profile</NavDropdown.Item>
 								</RequireAuth>

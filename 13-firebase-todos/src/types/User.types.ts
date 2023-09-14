@@ -15,8 +15,8 @@ export type ResetPassword = Omit<LoginCredentials, "password">
 export type UpdateProfileFormData = {
 	email: string
     displayName: string
-    photoURL: string
+    photoFile: FileList
     password: string
-    passwordConfirm?: string
+    passwordConfirm: string
 }
 

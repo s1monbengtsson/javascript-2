@@ -6,7 +6,7 @@ import useGetTodo from '../hooks/useGetTodo'
 import { todosCol } from '../services/firebase'
 import TodoForm from '../components/TodoForm'
 import { TodoFormData } from '../types/Todo.types'
-import { Alert, Container } from 'react-bootstrap'
+import { Alert, Container, Image } from 'react-bootstrap'
 import useAuth from '../hooks/useAuth'
 
 const EditTodoPage = () => {
@@ -41,7 +41,11 @@ const EditTodoPage = () => {
 	}
 
 	if (todo.uid !== currentUser?.uid) {
-		return <Alert variant='danger' className='text-center'>You do not own the rights for this todo!</Alert>
+		return (
+			<Container>
+				<Image src={"https://www.meme-arsenal.com/memes/b18797814f495980085c1359e8eef247.jpg"} style={{height: '500px'}}/>
+			</Container>
+		)
 	}
 
 	return (

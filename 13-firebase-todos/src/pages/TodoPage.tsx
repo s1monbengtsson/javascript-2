@@ -7,7 +7,7 @@ import ConfirmationModal from "../components/ConfirmationModal"
 import useGetTodo from "../hooks/useGetTodo"
 import { todosCol } from '../services/firebase'
 import { TodoFormData } from '../types/Todo.types'
-import { Alert, Container } from 'react-bootstrap'
+import { Container, Image } from 'react-bootstrap'
 import useAuth from '../hooks/useAuth'
 
 const TodoPage = () => {
@@ -60,7 +60,11 @@ const TodoPage = () => {
 	}
 
 	if (todo.uid !== currentUser?.uid) {
-		return <Alert variant='danger' className='text-center'>You do not own the rights for this todo!</Alert>
+		return (
+			<Container className='d-flex justify-content-center'>
+				<Image src={"https://www.meme-arsenal.com/memes/b18797814f495980085c1359e8eef247.jpg"} style={{height: '500px'}}/>
+			</Container>
+		)
 	}
 	
 		const createdAtTimestamp = (todo.created_at.seconds+todo.created_at.nanoseconds*10**-9)*1000

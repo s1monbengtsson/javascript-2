@@ -11,6 +11,8 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useAuth from '../hooks/useAuth'
 import { UpdateProfileFormData } from '../types/User.types'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { storage } from '../services/firebase'
 
 const UpdateProfilePage = () => {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -19,14 +21,19 @@ const UpdateProfilePage = () => {
 	const { handleSubmit, register, watch, formState: { errors } } = useForm<UpdateProfileFormData>({
 		defaultValues: {
 			email: currentUser?.email ?? "",
-			displayName: currentUser?.displayName ?? "",
-			photoURL: currentUser?.photoURL ?? "",
+			displayName: currentUser?.displayName ?? ""
 		}
 	})
 
+	
 	// Watch the current value of `password` form field
 	const passwordRef = useRef("")
 	passwordRef.current = watch('password')
+	
+	const photoFileRef = useRef<FileList | null>(null)
+	photoFileRef.current = watch('photoFile')
+	
+	if (!currentUser) return <p>Error, error, error!</p>
 
 	const onUpdateProfile: SubmitHandler<UpdateProfileFormData> = async (data) => {
 		// Clear any previous error state
@@ -38,15 +45,34 @@ const UpdateProfilePage = () => {
 			setLoading(true)
 
 			// Update displayName *ONLY* if it has changed
-			if (data.displayName !== (currentUser?.displayName ?? "")) {
+			if (data.displayName !== (currentUser.displayName ?? "")) {
 				console.log("Updating display name...")
 				await setDisplayName(data.displayName)
 			}
 
-			// Update photoUrl *ONLY* if it has changed
-			if (data.photoURL !== (currentUser?.photoURL ?? "")) {
-				console.log("Updating photo url...")
-				await setPhotoUrl(data.photoURL)
+			// only upload a photo if one has been selected
+			if (data.photoFile.length) {
+				const photo = data.photoFile[0]
+				console.log("Would upload photo...", data.photoFile[0])
+
+				// create a reference to upload the file to
+				const fileRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`) //photos/wegwGRGfwgwrgq2323566DWG/space.jpg
+			
+				try {
+					// upload photo to fileRef
+					const uploadResult = await uploadBytes(fileRef, photo)
+					
+					// get download url to uploaded file
+					const photoUrl = await getDownloadURL(uploadResult.ref)
+
+					console.log("photo successfully uploaded, download url is:", photoUrl)
+
+					// set download url as the user's photoURL
+					await setPhotoUrl(photoUrl)
+
+				} catch (error) {
+					console.log("upload failed", error)}
+					// setErrorMessage("Upload failed...")
 			}
 
 			// Update email *ONLY* if it has changed
@@ -88,7 +114,6 @@ const UpdateProfilePage = () => {
 					<Card>
 						<Card.Body>
 							<Card.Title className="mb-3">Update Profile</Card.Title>
-
 							{errorMessage && (<Alert variant="danger">{errorMessage}</Alert>)}
 
 							<Form onSubmit={handleSubmit(onUpdateProfile)}>
@@ -110,14 +135,22 @@ const UpdateProfilePage = () => {
 									{errors.displayName && <p className="invalid">{errors.displayName.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
-								<Form.Group controlId="photoURL" className="mb-3">
-									<Form.Label>Photo URL</Form.Label>
+								<Form.Group controlId="photo" className="mb-3">
+									<Form.Label>Photo</Form.Label>
 									<Form.Control
-										placeholder="https://www.chiquita.com/Bananana.jpg"
-										type="url"
-										{...register('photoURL')}
+										type="file"
+										accept='image/jpeg,image/png,image/webp,image/gif'
+										{...register('photoFile')}
 									/>
-									{errors.photoURL && <p className="invalid">{errors.photoURL.message ?? "Invalid value"}</p>}
+									{errors.photoFile && <p className="invalid">{errors.photoFile.message ?? "Invalid value"}</p>}
+									<Form.Text>{photoFileRef.current && (
+										<span>
+											{photoFileRef.current[0].name} 
+											{' '} 
+											({photoFileRef.current[0].size} kB)
+										</span>
+										)}
+									</Form.Text>
 								</Form.Group>
 
 								<Form.Group controlId="email" className="mb-3">
@@ -185,5 +218,4 @@ const UpdateProfilePage = () => {
 		</Container>
 	)
 }
-
 export default UpdateProfilePage
