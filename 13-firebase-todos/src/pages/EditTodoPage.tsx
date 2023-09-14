@@ -40,7 +40,7 @@ const EditTodoPage = () => {
 		})
 	}
 
-	if (todo.user !== currentUser?.uid) {
+	if (todo.uid !== currentUser?.uid) {
 		return <Alert variant='danger' className='text-center'>You do not own the rights for this todo!</Alert>
 	}
 

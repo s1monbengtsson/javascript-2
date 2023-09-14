@@ -3,12 +3,12 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { NavLink, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
-import { NavDropdown } from 'react-bootstrap'
+import { Image, NavDropdown } from 'react-bootstrap'
 import RequireAuth from '../../components/RequireAuth'
 
 const Navigation = () => {
 
-	const { currentUser, userEmail } = useAuth()
+	const { currentUser, userEmail, userName, userPhotoUrl } = useAuth()
 
 	return (
 		<Navbar bg="dark" variant="dark" expand="sm">
@@ -27,7 +27,18 @@ const Navigation = () => {
 							:	
 							<>
 								<Nav.Link as={NavLink} end to="/todos">Todos</Nav.Link>
-								<NavDropdown title={userEmail}>
+								<NavDropdown 
+									title={
+										userPhotoUrl 
+										? <Image 
+											src={userPhotoUrl} 
+											style={{height: '30px'}}
+											rounded
+											fluid
+										/> 
+										: userName || userEmail
+									}
+								>
 								<RequireAuth>
 									<NavDropdown.Item as={NavLink} to='/update-profile'>Update Profile</NavDropdown.Item>
 								</RequireAuth>

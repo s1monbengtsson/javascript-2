@@ -30,6 +30,9 @@ const ForgotPasswordPage = () => {
 
             // send a toast with confirmation message
             toast.success("Password reset link has been sent to your email.")
+
+            setIsLoading(false)
+            
             setTimeout(() => {
                 navigate('/login')
             }, 1000)

@@ -12,12 +12,11 @@ import useAuth from '../hooks/useAuth'
 
 
 const TodosPage = () => {
+	const { currentUser } = useAuth()
 	const {
 		data: todos,
 		loading
-	} = useGetTodos()
-
-	const { currentUser } = useAuth()
+	} = useGetTodos(currentUser?.uid ?? "")
 
 	// Create a new todo in the API
 	const addTodo = async (data: TodoFormData) => {
@@ -29,7 +28,7 @@ const TodosPage = () => {
 			...data,
 			created_at: serverTimestamp(),
 			updated_at: serverTimestamp(),
-			user: currentUser?.uid
+			uid: currentUser?.uid
 		})
 
 		// 🥂
@@ -57,7 +56,10 @@ const TodosPage = () => {
 							to={`/todos/${todo._id}`}
 						>
 							{todo.title}
-							{todo.created_at && <span className='text-muted' style={{fontSize: '13px'}}>{firebaseTimestamptoIsoLocal(todo.created_at)}</span>}
+							{todo.created_at 
+								? <span className='text-muted' style={{fontSize: '13px'}}>{firebaseTimestamptoIsoLocal(todo.created_at)}</span>
+								: <span className='text-muted' style={{fontSize: '13px'}}>Saving...</span>	
+							}
 						</ListGroup.Item>
 					))}
 				</ListGroup>

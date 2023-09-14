@@ -19,7 +19,6 @@ const TodoForm: React.FC<IProps> = ({ onSave, initialValues }) => {
 
 	const onFormSubmit: SubmitHandler<TodoFormData> = async (data: TodoFormData) => {
 		// Pass form data along to parent component
-		// console.log(data)
 		await onSave(data)
 	}
 

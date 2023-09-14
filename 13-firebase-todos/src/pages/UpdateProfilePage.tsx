@@ -1,5 +1,5 @@
 import { FirebaseError } from 'firebase/app'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -8,82 +8,77 @@ import Container from "react-bootstrap/Container"
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import { useForm, SubmitHandler } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import useAuth from '../hooks/useAuth'
 import { UpdateProfileFormData } from '../types/User.types'
-import { signOut } from 'firebase/auth'
-import { auth } from '../services/firebase'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
 
-const UpdateProfile = () => {
-	const [errorMessage, setErrorMessage] = useState<string|null>(null)
+const UpdateProfilePage = () => {
+	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [loading, setLoading] = useState(false)
-	const { handleSubmit } = useForm<UpdateProfileFormData>()
-	const {  currentUser } = useAuth()
+	const { currentUser, setDisplayName, setEmail, setPassword, setPhotoUrl } = useAuth()
+	const { handleSubmit, register, watch, formState: { errors } } = useForm<UpdateProfileFormData>({
+		defaultValues: {
+			email: currentUser?.email ?? "",
+			displayName: currentUser?.displayName ?? "",
+			photoURL: currentUser?.photoURL ?? "",
+		}
+	})
 
-	const { setDisplayName,  setEmail, setPassword } = useAuth()
+	// Watch the current value of `password` form field
+	const passwordRef = useRef("")
+	passwordRef.current = watch('password')
 
-	const [newDisplayName, setNewDisplayName] = useState(currentUser?.displayName ?? "")
-	const [newEmail, setNewEmail] = useState(currentUser?.email ?? "")
-	const [_newPhotoURL, setNewPhotoURL] = useState(currentUser?.photoURL ?? "")
-	const [newPassword, setNewPassword] = useState("")
-
-	const navigate = useNavigate()
-
-	const onUpdateProfile: SubmitHandler<UpdateProfileFormData> = async () => {
+	const onUpdateProfile: SubmitHandler<UpdateProfileFormData> = async (data) => {
 		// Clear any previous error state
 		setErrorMessage(null)
 
 		// Update user profile
 		try {
-			if (!currentUser) {
-				return
-			}
 			// Disable update-button while update is in progress
 			setLoading(true)
 
 			// Update displayName *ONLY* if it has changed
-			if (newDisplayName !== currentUser.displayName) {
-				console.log("running inside displayname")
-				await setDisplayName(newDisplayName)
+			if (data.displayName !== (currentUser?.displayName ?? "")) {
+				console.log("Updating display name...")
+				await setDisplayName(data.displayName)
+			}
+
+			// Update photoUrl *ONLY* if it has changed
+			if (data.photoURL !== (currentUser?.photoURL ?? "")) {
+				console.log("Updating photo url...")
+				await setPhotoUrl(data.photoURL)
 			}
 
 			// Update email *ONLY* if it has changed
-			if (newEmail !== currentUser.email) {
-				console.log("running inside email")
-				await setEmail(newEmail)
+			if (data.email !== (currentUser?.email ?? "")) {
+				console.log("Updating email...")
+				await setEmail(data.email)
 			}
-			
+
 			// Update password *ONLY* if the user has provided a new password to set
-			if (newPassword.length >= 6) {
-				console.log("running inside password")
-				await setPassword(newPassword)
+			if (data.password) {
+				console.log("Updating password...")
+				await setPassword(data.password)
 			}
 
 			// Reload user data
+			// await reloadUser()
 
 			// Show success toast 🥂
-			toast.success("Successfully updated profile")
+			toast.success("Profile successfully updated")
 
 			// Enable update-button again
 			setLoading(false)
+			console.log("All ok 👍🏻👍🏻👍🏻!")
 
 		} catch (error) {
 			if (error instanceof FirebaseError) {
 				setErrorMessage(error.message)
-				setTimeout(() => {
-					signOut(auth)
-					navigate('/')
-				}, 2500)
 			} else {
 				setErrorMessage("Something went wrong. Have you tried turning it off and on again?")
 			}
 			setLoading(false)
 		}
-	}
-
-	if (!currentUser) {
-		return 
 	}
 
 	return (
@@ -103,28 +98,38 @@ const UpdateProfile = () => {
 								<Form.Group controlId="displayName" className="mb-3">
 									<Form.Label>Name</Form.Label>
 									<Form.Control
-										placeholder={currentUser.displayName ?? "Sean Banan"}
+										placeholder="Sean Banan"
 										type="text"
-										onChange={e => setNewDisplayName(e.target.value)}
+										{...register('displayName', {
+											minLength: {
+												value: 3,
+												message: "If you have a name, it has to be at least 3 characters long"
+											}
+										})}
 									/>
+									{errors.displayName && <p className="invalid">{errors.displayName.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
 								<Form.Group controlId="photoURL" className="mb-3">
 									<Form.Label>Photo URL</Form.Label>
 									<Form.Control
-										placeholder={currentUser.photoURL ?? "https://www.chiquita.com/Bananana.jpg"}
+										placeholder="https://www.chiquita.com/Bananana.jpg"
 										type="url"
-										onChange={e => setNewPhotoURL(e.target.value)}
+										{...register('photoURL')}
 									/>
+									{errors.photoURL && <p className="invalid">{errors.photoURL.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
 								<Form.Group controlId="email" className="mb-3">
 									<Form.Label>Email</Form.Label>
 									<Form.Control
-										placeholder={currentUser.email ?? "snelhest2000@horsemail.com"}
- 										type="email"
-										onChange={e => setNewEmail(e.target.value)}
+										placeholder="snelhest2000@horsemail.com"
+										type="email"
+										{...register('email', {
+											required: "You have to enter an email",
+										})}
 									/>
+									{errors.email && <p className="invalid">{errors.email.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
 								<Form.Group controlId="password" className="mb-3">
@@ -132,8 +137,14 @@ const UpdateProfile = () => {
 									<Form.Control
 										type="password"
 										autoComplete="new-password"
-										onChange={e => setNewPassword(e.target.value)}
+										{...register('password', {
+											minLength: {
+												value: 3,
+												message: "Please enter at least 3 characters"
+											},
+										})}
 									/>
+									{errors.password && <p className="invalid">{errors.password.message ?? "Invalid value"}</p>}
 									<Form.Text>At least 6 characters</Form.Text>
 								</Form.Group>
 
@@ -142,8 +153,17 @@ const UpdateProfile = () => {
 									<Form.Control
 										type="password"
 										autoComplete="off"
-										onChange={e => setPassword(e.target.value)}
+										{...register('passwordConfirm', {
+											minLength: {
+												value: 3,
+												message: "Please enter at least 3 characters"
+											},
+											validate: (value) => {
+												return !passwordRef.current || value === passwordRef.current || "The passwords does not match 🤦🏼‍♂️"
+											}
+										})}
 									/>
+									{errors.passwordConfirm && <p className="invalid">{errors.passwordConfirm.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
 								<Button
@@ -166,4 +186,4 @@ const UpdateProfile = () => {
 	)
 }
 
-export default UpdateProfile
+export default UpdateProfilePage

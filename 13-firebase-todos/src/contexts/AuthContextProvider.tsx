@@ -9,6 +9,7 @@ import {
 	updateEmail,
 	updatePassword,
 	sendPasswordResetEmail,
+	reload,
 } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
@@ -19,7 +20,7 @@ type AuthContextType = {
 	login: (email: string, password: string) => Promise<UserCredential>
 	logout: () => Promise<void>
 	signup: (email: string, password: string) => Promise<UserCredential>
-	// reloadUser: ?
+	reloadUser: () => Promise<boolean>
 	resetPassword: (email: string) => Promise<void> 
 	setEmail: (email: string) => Promise<void>
 	setDisplayName: (name: string) => Promise<void>
@@ -56,32 +57,48 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 		return createUserWithEmailAndPassword(auth, email, password)
 	}
 
-	// const reloadUser = async () => {
-	// }
+	const reloadUser = async () => {
+		if (!auth.currentUser) {
+			return false
+		}
+
+		await reload(auth.currentUser)
+
+		setUserName(auth.currentUser.displayName)
+		setUserEmail(auth.currentUser.email)
+		setUserPhotoUrl(auth.currentUser.photoURL)
+		return true
+	}
 
 	const resetPassword = (email: string) => {
-		return sendPasswordResetEmail(auth, email)
+		return sendPasswordResetEmail(auth, email, {
+			url: window.location.origin + '/login'
+		})
 	}
 
 	const setEmail = (email: string) => {
+		if (!currentUser) throw new Error("Current user is null!")
 		setUserEmail(email)
-		return updateEmail(auth.currentUser!, email)
+		return updateEmail(currentUser, email)
 	}
 
 	const setPassword = (password: string) => {
-		return updatePassword(auth.currentUser!, password)
+		if (!currentUser) throw new Error("Current user is null!")
+		return updatePassword(currentUser, password)
 	}
 
 	const setDisplayName = (name: string) => {
+		if (!currentUser) throw new Error("Current user is null!")
 		setUserName(name)
-		return updateProfile(auth.currentUser!, {
+		return updateProfile(currentUser, {
 			displayName: name
 		})
 	}
 
 	const setPhotoUrl = (photoURL: string) => {
+		if (!currentUser) throw new Error("Current user is null!")
 		setUserPhotoUrl(photoURL)
-		return updateProfile(auth.currentUser!, {
+		return updateProfile(currentUser, {
 			photoURL
 		})
 	}
@@ -94,9 +111,13 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			if (user) {
 				// User is logged in
 				setUserEmail(user.email)
+				setUserName(user.displayName)
+				setUserPhotoUrl(user.photoURL)
 			} else {
 				// No user is logged in
 				setUserEmail(null)
+				setUserName(null)
+				setUserPhotoUrl(null)
 			}
 			setLoading(false)
 		})
@@ -110,6 +131,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			login,
 			logout,
 			signup,
+			reloadUser,
 			resetPassword,
 			setPassword,
 			setDisplayName,
