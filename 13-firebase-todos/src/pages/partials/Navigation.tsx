@@ -35,7 +35,9 @@ const Navigation = () => {
 										height={30}
 										width={30}
 										title={(userName || userEmail) ?? ""}
-										roundedCircle />
+										roundedCircle 
+										style={{aspectRatio: '1'}}
+										/>
 									: userName || userEmail
 								}
 							>

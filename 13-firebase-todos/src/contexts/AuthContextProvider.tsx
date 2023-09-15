@@ -139,7 +139,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			setPhotoUrl,
 			userEmail,
 			userName,
-			userPhotoUrl,
+			userPhotoUrl
 		}}>
 			{loading ? (
 				<div id="initial-loader">
