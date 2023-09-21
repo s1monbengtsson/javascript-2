@@ -4,12 +4,24 @@ import Container from "react-bootstrap/Container"
 import ListGroup from "react-bootstrap/ListGroup"
 import { TodoFormData } from "../../types/Todo.types"
 import { toast } from "react-toastify"
+import { v4 as uuid } from "uuid"
 import TodoForm from "./TodoForm"
-import { dummyTodos as todos } from "../../data/todos"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { add, remove, toggle } from "./todosSlice"
 
 const TodosPage = () => {
+	const todos = useAppSelector((state) => state.todos)
+	const dispatch = useAppDispatch()
+
 	const handleAddTodo = async (data: TodoFormData) => {
 		console.log("handleAddTodo", data)
+		dispatch(
+			add({
+				id: uuid(),
+				title: data.title,
+				completed: false,
+			})
+		)
 
 		// 🥂
 		toast.success("Yay, even MORE stuff to do... 😁")
@@ -17,6 +29,7 @@ const TodosPage = () => {
 
 	const handleToggle = async (id: string) => {
 		console.log("handleToggle", id)
+		dispatch(toggle(id))
 
 		// 🥂
 		toast.success("Yay, you did something... 😁")
@@ -24,6 +37,7 @@ const TodosPage = () => {
 
 	const handleDelete = async (id: string) => {
 		console.log("handleDelete", id)
+		dispatch(remove(id))
 
 		// 🥂
 		toast.success("Deleting stuff instead of doing them still counts... 🏆")

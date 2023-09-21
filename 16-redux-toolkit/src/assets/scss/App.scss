@@ -36,9 +36,11 @@ h6 {
 		align-items: center;
 
 		&.done {
-			color: $success;
-			font-style: italic;
-			text-decoration: line-through;
+			.todo-title {
+				color: $success;
+				font-style: italic;
+				text-decoration: line-through;
+			}
 		}
 	}
 }

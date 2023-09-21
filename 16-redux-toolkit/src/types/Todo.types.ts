@@ -8,3 +8,7 @@ export type TodoFormData = {
 	title: string
 	completed: boolean
 }
+
+export type Todos = {
+	todos: Todo[]
+}
