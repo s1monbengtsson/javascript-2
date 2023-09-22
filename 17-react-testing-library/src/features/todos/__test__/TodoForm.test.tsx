@@ -85,3 +85,66 @@ describe("Todo Form", () => {
 		expect(inputElement).toHaveValue("")
 	})
 })
+
+describe("Todo Form validation", () => {
+	it("Shows validation error if input is empty", async () => {
+		// Render
+		const { user } = renderWithUserInteraction(
+			<TodoForm onSave={fakeOnSave} />
+		)
+
+		// Find
+		const inputElement = screen.getByRole("textbox")
+
+		// Interact
+		await user.type(inputElement, "{Enter}")
+
+		// Find element that got rendered after interaction
+		const validationErrorElement = screen.getByText(
+			/You have to write something/
+		)
+
+		// Assert
+		expect(validationErrorElement).toBeInTheDocument()
+	})
+
+	it("Shows validation error if input is too short", async () => {
+		// Render
+		const { user } = renderWithUserInteraction(
+			<TodoForm onSave={fakeOnSave} />
+		)
+
+		// Find
+		const inputElement = screen.getByRole("textbox")
+
+		// Interact
+		await user.type(inputElement, "lol")
+		await user.type(inputElement, "{Enter}")
+
+		// Find element that got rendered after interaction
+		const validationErrorElement = screen.getByText(/too short/i)
+
+		// Assert
+		expect(validationErrorElement).toBeInTheDocument()
+	})
+
+	it("Does not show validation error if input is valid", async () => {
+		// Render
+		const { user } = renderWithUserInteraction(
+			<TodoForm onSave={fakeOnSave} />
+		)
+
+		// Find
+		const inputElement = screen.getByRole("textbox")
+
+		// Interact
+		await user.type(inputElement, "This title is valid")
+		await user.type(inputElement, "{Enter}")
+
+		// Find element that got rendered after interaction
+		const validationErrorElement = screen.queryByText(/too short/i)
+
+		// Assert
+		expect(validationErrorElement).not.toBeInTheDocument()
+	})
+})
