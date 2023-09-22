@@ -1,9 +1,6 @@
 import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import TodoList from "../TodoList"
 import { describe, expect, it } from "vitest"
-import { renderWithUserInteraction } from "../../../tests/helpers"
-import { useState } from "react"
 import { Todo } from "../../../types/Todo.types"
 import { v4 as uuid } from "uuid"
 
