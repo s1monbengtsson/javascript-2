@@ -12,13 +12,15 @@ import { add, remove, toggle } from "./todosSlice"
 
 const TodosPage = () => {
 	const dispatch = useAppDispatch()
-	const todos = useAppSelector(state => state.todos)
+	const todos = useAppSelector((state) => state.todos)
 
 	const handleAddTodo = async (data: TodoFormData) => {
-		dispatch(add({
-			id: uuid(),
-			...data,
-		}))
+		dispatch(
+			add({
+				id: uuid(),
+				...data,
+			})
+		)
 
 		// 🥂
 		toast.success("Yay, even MORE stuff to do... 😁")
@@ -75,7 +77,11 @@ const TodosPage = () => {
 				</ListGroup>
 			)}
 
-			{todos && <TodoCounter count={todos.length} />}
+			{todos && (
+				<TodoCounter
+					count={todos.filter((todo) => !todo.completed).length}
+				/>
+			)}
 		</Container>
 	)
 }
