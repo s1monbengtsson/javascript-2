@@ -1,22 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import TodoForm from "../TodoForm"
 import { describe, expect, it } from "vitest"
-import userEvent from "@testing-library/user-event"
+import { renderWithUserInteraction } from "../../../tests/helpers"
 
 const fakeOnSave = async () => {
 	return
-}
-
-const renderWithUserInteraction = (
-	component: React.ReactElement<
-		any,
-		string | React.JSXElementConstructor<any>
-	>
-) => {
-	return {
-		user: userEvent.setup(),
-		...render(component),
-	}
 }
 
 const todoTitle = "this is my todo title"
