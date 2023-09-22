@@ -6,6 +6,7 @@ import { toast } from "react-toastify"
 import { v4 as uuid } from "uuid"
 import { TodoFormData } from "../../types/Todo.types"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import TodoCounter from "./TodoCounter"
 import TodoForm from "./TodoForm"
 import { add, remove, toggle } from "./todosSlice"
 
@@ -74,9 +75,7 @@ const TodosPage = () => {
 				</ListGroup>
 			)}
 
-			{todos && todos.length === 0 && (
-				<p>Yayyy, you have 0 todos to do</p>
-			)}
+			{todos && <TodoCounter count={todos.length} />}
 		</Container>
 	)
 }
